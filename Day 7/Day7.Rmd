@@ -1,0 +1,156 @@
+---
+title: "Day 7 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(igraph)
+library(ggplot2)
+library(ggraph)
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("Day7Sample.txt")
+```
+
+## Part 1
+Create the graph!!
+
+```{r}
+programtower<-make_empty_graph()
+## read through the input and add all vertices
+for(i in 1:length(input)){
+  prog<-unlist(str_split(input[i]," "))
+  ### find out if this has already been entered
+  programtower<-add_vertices(programtower,1,
+                                   attr=list(name=prog[1],weight=as.numeric(str_sub(prog[2],2,-2))))}
+## read through the input a second time and add all edges
+for(i in 1:length(input)){
+  prog<-unlist(str_split(str_remove_all(input[i],",")," "))
+  if(length(prog)>2){
+    for(j in 4:length(prog)){
+    programtower<-add_edges(programtower,c(prog[1],prog[j]))}}}
+
+```
+
+Could get the answer by plotting
+
+```{r}
+#plot(programtower)
+ggraph(programtower,'tree')+
+  geom_edge_diagonal(arrow = arrow(length = unit(2, 'mm')), 
+                start_cap = circle(3, 'mm'),
+                end_cap = circle(3, 'mm'))+
+  geom_node_text(aes(size=.1,label=str_c(name,"-",weight)))+
+  theme(legend.position="none")
+```
+
+The answer is also available by finding the program that has nothing that leads into it.  
+
+```{r}
+part1<-V(programtower)[which(degree(programtower,mode="in")==0)]$name
+part1
+```
+
+## Part 2
+
+Run through the towers to find the one that is unbalanced.
+
+
+```{r}
+### get list of vertices NOT holding discs 
+discless<-V(programtower)[which(degree(programtower,mode="out")>0)]
+#give the support towers an attribute of total weight
+programtower <- programtower %>% set_vertex_attr(name="totalbalance",value=NA)
+```
+
+
+I know I should do this recursively.  I *know* I should do this recursively.  I can SEE the recursion right there, staring me in the face... and yet.
+
+```{r}
+### get list of vertices NOT holding discs 
+discless<-V(programtower)[which(degree(programtower,mode="out")>0)]
+#give the support towers an attribute of total weight
+programtower <- programtower %>% set_vertex_attr(name="totalbalance",value=NA)
+keepgoing<-TRUE
+while(keepgoing&&any(is.na(V(programtower)$totalbalance))){
+  for(i in 1:length(V(programtower))){
+    prog<-V(programtower)[i]
+    ### if it doesn't have a total balance
+    if(is.na(prog$totalbalance)){
+      ### does it have children? no
+      if(degree(programtower,prog)==1){
+        programtower<-programtower %>% set_vertex_attr(name="totalbalance",prog,prog$weight)
+      }else{
+        ### get list of all the ones it is holding
+        holding<-neighbors(programtower,prog)
+        ### if all of them have a total balance 
+        if(all(!is.na(holding$totalbalance))){
+          ### check to see if they are all equal - if so, then
+          if(all(holding$totalbalance==holding[1]$totalbalance)){
+            programtower <- programtower %>%
+              set_vertex_attr(name="totalbalance",prog,sum(holding$totalbalance)+prog$weight)
+          }else{
+            huh<-(holding$totalbalance)
+            keepgoing<-FALSE
+            break}}}}}
+  
+  }
+
+```
+```{r}
+## what's the difference between the min & max
+balancedifference<-(max(holding$totalbalance)-min(holding$totalbalance))
+## is it smaller or larger?
+if(length(which(holding$totalbalance==min(holding$totalbalance)))==1){
+  ### if smaller, find the node that is smaller
+  oddball<-holding[which(holding$totalbalance==min(holding$totalbalance))]
+  part2<-oddball$weight+balancedifference
+}else{
+  oddball<-holding[which(holding$totalbalance==max(holding$totalbalance))]
+  part2<-oddball$weight-balancedifference
+  }
+oddball
+part2
+```
+```{r,echo==FALSE}
+
+while(any(is.na(V(programtower)$totalbalance))){
+  for(i in 1:length(V(programtower))){
+    prog<-V(programtower)[i]
+    ### if it doesn't have a total balance
+    if(is.na(prog$totalbalance)){
+      ### does it have children? no
+      if(degree(programtower,prog)==1){
+        programtower<-programtower %>% set_vertex_attr(name="totalbalance",prog,prog$weight)
+      }else{
+        ### get list of all the ones it is holding
+        holding<-neighbors(programtower,prog)
+        ### if all of them have a total balance 
+        if(all(!is.na(holding$totalbalance))){
+                      programtower <- programtower %>%
+                        set_vertex_attr(name="totalbalance",prog,sum(holding$totalbalance)+prog$weight)
+        }}}}}
+
+
+
+ggraph(programtower,'tree')+
+  geom_edge_diagonal(arrow = arrow(length = unit(2, 'mm')), 
+                start_cap = circle(6, 'mm'),
+                end_cap = circle(6, 'mm'))+
+  geom_node_text(aes(size=.1,label=str_c(name,"-",weight,"\n",totalbalance)))+
+  geom_node_text(aes(size=.1,label=str_c("\n",totalbalance)))+
+  theme(legend.position="none")
+```
+
+
+
+
+

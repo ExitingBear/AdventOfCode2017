@@ -1,0 +1,61 @@
+---
+title: "Day 5 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+input<-(c(0,3,0,1,-3))
+input<-as.numeric(input)
+```
+
+## Part 1
+
+```{r}
+jumper<-function(x){
+  n<-1
+  counter<-0
+  while(n>=1&&n<=length(x)){
+    x[n]<-x[n]+1
+    n<-n+x[n]-1
+    counter<-counter+1}
+  counter}
+
+```
+
+```{r}
+part1<-jumper(input)
+part1
+```
+
+
+```{r}
+j2<-function(x){
+  n<-1
+  counter<-0
+  while(n>=1&&n<=length(x)){
+    if(x[n]<3){
+      x[n]<-x[n]+1
+      n<-n+x[n]-1
+    }else{
+      x[n]<-x[n]-1
+      n<-n+x[n]+1}
+    counter<-counter+1}
+  counter}
+
+```
+
+```{r}
+part2<-j2(input)
+part2
+```
+

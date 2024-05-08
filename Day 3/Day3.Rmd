@@ -1,0 +1,93 @@
+---
+title: "Day 3 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+## Part 1
+This is going to be messy.
+
+
+For part 1, the answer can be found by finding the ring level the number is on, figuring out how far the number is from a corner, and using that to get the manhattan distance from the center.
+
+```{r}
+spiralmd<-function(n){
+  ### every odd square root ends a ring.  So, first find the next lowest odd square root.
+  x<-floor(sqrt(n-1))
+  ### translate that to a ring number
+  ring<-ceiling(x/2)
+  ### then find the distance from the corner (in a counter clockwise direction)
+  ### (2*ring+1)^2 is the bottom right number.
+  cornerdistance<-((2*ring+1)^2-n)%%(2*ring)
+  ### use this to find the distance from *any* corner
+  cornerdistance<-ring-abs(ring-cornerdistance)
+  ### because the distance to the corners is twice the ring
+  ### the manhattan distance is twice the ring - the distance to the corner
+  md<-2*ring-cornerdistance
+  ### because 1 is a special case, make it 0.
+  if(n==1){md<-0}
+  md}
+```
+
+```{r}
+part1<-sapply(c(1,12,23,1024),spiralmd)
+part1
+```
+## Part 2
+Also messy. There are 12 different formulas for figuring out the stress test values once the spiral has gone a few rounds - one for each edge, one for each diagonal, and one for the number before the diagonal where one of the edge values doesn't quite exist yet.
+So, figuring out something universal for a one shot use is overkill.  (It can be done, but not here)
+
+Instead - create the matrix outright, figure out the stress test values in order. Stop when one of them is higher than the input.  My input is in the low six figures, so it is likely the answer will be somewhere around 50 (it grows exponentially) But just to be sure, this should work for anything under 81.
+
+
+```{r}
+stresstest<-function(n){
+  ### hardcode the spiral to 121
+  m<-matrix(c(c(101, 100, 99, 98, 97, 96, 95, 94, 93, 92, 91),
+              c(102, 65, 64, 63, 62, 61, 60, 59, 58, 57, 90),
+              c(103, 66, 37, 36, 35, 34, 33, 32, 31, 56, 89),
+              c(104, 67, 38, 17, 16, 15, 14, 13, 30, 55, 88),
+              c(105, 68, 39, 18, 5, 4, 3, 12, 29, 54, 87),
+              c(106, 69, 40, 19, 6, 1, 2, 11, 28, 53, 86),
+              c(107, 70, 41, 20, 7, 8, 9, 10, 27, 52, 85),
+              c(108, 71, 42, 21, 22, 23, 24, 25, 26, 51, 84),
+              c(109, 72, 43, 44, 45, 46, 47, 48, 49, 50, 83),
+              c(110, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82),
+              c(111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121)),
+            nrow=11,byrow=TRUE)
+  ### make a blank matrix and put 1 at the center
+  stressm<-matrix(0,nrow=11,ncol=11)
+  stressm[6,6]<-1
+  current<-1
+  keepgoing<-TRUE
+  while(keepgoing){
+    ### get the next number
+    current<-current+1
+    ### find the coordinates of the current number (starting with 2)
+    coords<-which(m==current,arr.ind = TRUE)
+    ### because the stress matrix is set to 0, just add all of the values around the target value
+    valsum<-sum(stressm[(coords[1]-1):(coords[1]+1),(coords[2]-1):(coords[2]+1)])
+    ### put the answer there
+    stressm[coords]<-valsum
+    ### if the current sum is higher than 
+    if(valsum>n){keepgoing<-FALSE}}
+  ### for fun, return the number reached & the sum in that area.
+  return(c(current,valsum))}
+```
+
+
+
+```{r}
+part2<-sapply(c(1,12,23,1024),stresstest)
+part2
+```
