@@ -21,11 +21,11 @@ Code and notebooks from [Advent of Code 2021](https://adventofcode.com/2021).
 | 14 | ** | [HTML](https://exitingbear.github.io/AdventOfCode2016/Day-14.nb.html) | [Notebook](<Day 14/Day14.Rmd>) | [Files](<Day 14>) |
 | 15 | ** | [HTML](https://exitingbear.github.io/AdventOfCode2016/Day-15.nb.html) | [Notebook](<Day 15/Day15.Rmd>) | [Files](<Day 15>) |
 | 16 | ** | [HTML](https://exitingbear.github.io/AdventOfCode2016/Day-16.nb.html) | [Notebook](<Day 16/Day16.Rmd>) | [Files](<Day 16>) |
-| 17 | *Trick Shot* | [HTML](https://exitingbear.github.io/AdventOfCode2016/Day-17.nb.html) | [Notebook](<Day 17/Day17.Rmd>) | [Files](<Day 17>) |
+| 17 | ** | [HTML](https://exitingbear.github.io/AdventOfCode2016/Day-17.nb.html) | [Notebook](<Day 17/Day17.Rmd>) | [Files](<Day 17>) |
 | 18 | **  | [HTML](https://exitingbear.github.io/AdventOfCode2016/Day-18.nb.html) | [Notebook](<Day 18/Day18.Rmd>) | [Files](<Day 18>) |
 | 19 | ** | [HTML](https://exitingbear.github.io/AdventOfCode2016/Day-19.nb.html) | [Notebook](<Day 19/Day19.Rmd>) | [Files](<Day 19>) |
 | 20 | **  | [HTML](https://exitingbear.github.io/AdventOfCode2016/Day-20.nb.html) | [Notebook](<Day 20/Day20.Rmd>) | [Files](<Day 20>) |
-| 21 | *Dirac Dice* | [HTML](https://exitingbear.github.io/AdventOfCode2016/Day-21.nb.html) | [Notebook](<Day 21/Day21.Rmd>) | [Files](<Day 21>) |
+| 21 | ** | [HTML](https://exitingbear.github.io/AdventOfCode2016/Day-21.nb.html) | [Notebook](<Day 21/Day21.Rmd>) | [Files](<Day 21>) |
 | 22 | ** | [HTML](https://exitingbear.github.io/AdventOfCode2016/Day-22.nb.html) | [Notebook](<Day 22/Day22.Rmd>) | [Files](<Day 22>) |
 | 23 | ** | [HTML](https://exitingbear.github.io/AdventOfCode2016/Day-23.nb.html) | [Notebook](<Day 23/Day23.Rmd>) | [Files](<Day 23>) |
 | 24 | ** | [HTML](https://exitingbear.github.io/AdventOfCode2016/Day-24.nb.html) | [Notebook](<Day 24/Day24.Rmd>) | [Files](<Day 24>) |
