@@ -1,0 +1,55 @@
+---
+title: "Day 1 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+input<-c("12131415")
+```
+
+## Part 1
+Just run through the string - quickly.  Check everything against what happens next.
+```{r}
+captcha<-function(s){
+  summer<-sapply(1:nchar(s),function(x){
+    ### check the next character.  If it's the same, add that as a number to the outvector
+    if(str_sub(s,x,x)==str_sub(s,x+1,x+1)){as.numeric(str_sub(s,x,x))}else{0}})
+  if(str_sub(s,1,1)==str_sub(s,-1,-1)){summer<-c(summer,as.numeric(str_sub(s,1,1)))}
+  ### sum
+  summer<-sum(summer)
+  summer}
+```
+
+```{r,}
+part1<-captcha(input)
+part1
+```
+## Part 2
+```{r}
+captcha2<-function(s){
+  summer<-sapply(1:nchar(s),function(x){
+    ### find the position halfway around the string
+    h<-x+nchar(s)/2
+    if(h>nchar(s)){h<-h-nchar(s)}
+    ### compare them.
+    if(str_sub(s,x,x)==str_sub(s,h,h)){as.numeric(str_sub(s,x,x))}else{0}})
+  summer<-sum(summer)
+  summer}
+```
+
+```{r,}
+part2<-captcha2(input)
+part2
+```
+
+

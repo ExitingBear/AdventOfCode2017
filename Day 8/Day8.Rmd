@@ -1,0 +1,131 @@
+---
+title: "Day 8 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("Day8Sample.txt")
+
+```
+
+## Part 1
+Write the function to go through the instructions
+
+```{r}
+findresult<-function(instructions=input){
+  ### create a dictionary for the registers
+  registers<-dict()
+  ### go through each instruction, one at a time
+  for(i in 1:length(instructions)){
+    ### split instructions into 7 pieces - and then back (for ease of reference)
+    inst<-as.list(unlist(str_split(instructions[i]," ")))
+    ### because I have done this before:
+    #### make sure register to be changed exists
+    if(!registers$has(inst[[1]])){registers$set(inst[[1]],0)}
+    ### change the following to numbers
+    ### the amount to be increased by:
+    if(str_detect(inst[[3]],"[:lower:]")){
+      if(registers$has(inst[[3]])){inst[[3]]<-registers$get(inst[[3]])
+      }else{registers$set(inst[[3]],0)
+        inst[[3]]<-0}
+    }else{
+      inst[[3]]<-as.numeric(inst[[3]])
+      }
+    ### the first number of the comparison
+    if(str_detect(inst[[5]],"[:lower:]")){
+      if(registers$has(inst[[5]])){
+        inst[[5]]<-registers$get(inst[[5]])
+      }else{
+        registers$set(inst[[5]],0)
+        inst[[5]]<-0}
+    }else{inst[[5]]<-as.numeric(inst[[5]])}
+    ### second number of the comparison
+    if(str_detect(inst[7],"[:lower:]")){
+      if(registers$has(inst[[7]])){inst[[7]]<-registers$get(inst[[7]])
+      }else{registers$set(inst[[7]],0)
+        inst[7]<-0}
+    }else{inst[[7]]<-as.numeric(inst[[7]])}
+    ### find if the condition is met
+    condmet<-do.call(inst[[6]],list(inst[[5]],inst[[7]]))
+    ### if so
+    if(condmet){
+      ### increase if it is an increase instruction 
+      if(inst[[2]]=="inc"){registers$set(inst[[1]],registers$get(inst[[1]])+inst[[3]])
+      ### otherwise decrease
+      }else{registers$set(inst[[1]],registers$get(inst[[1]])-inst[[3]])}}}
+max(unlist(registers$values()))}
+```
+
+```{r}
+part1<-findresult()
+part1
+
+```
+
+## Part 2
+Making a slight change to the function to store the highest (as it is created)
+
+
+```{r}
+findresult2<-function(instructions=input){
+  ### create a dictionary for the registers
+  registers<-dict()
+  ### start looking for the maximums
+  highestmax<-0
+  ### go through each instruction, one at a time
+  for(i in 1:length(instructions)){
+    ### split instructions into 7 pieces - and then back (for ease of reference)
+    inst<-as.list(unlist(str_split(instructions[i]," ")))
+    ### because I have done this before:
+    #### make sure register to be changed exists
+    if(!registers$has(inst[[1]])){registers$set(inst[[1]],0)}
+    ### change the following to numbers
+    ### the amount to be increased by:
+    if(str_detect(inst[[3]],"[:lower:]")){
+      if(registers$has(inst[[3]])){inst[[3]]<-registers$get(inst[[3]])
+      }else{registers$set(inst[[3]],0)
+        inst[[3]]<-0}
+    }else{
+      inst[[3]]<-as.numeric(inst[[3]])
+      }
+    ### the first number of the comparison
+    if(str_detect(inst[[5]],"[:lower:]")){
+      if(registers$has(inst[[5]])){
+        inst[[5]]<-registers$get(inst[[5]])
+      }else{
+        registers$set(inst[[5]],0)
+        inst[[5]]<-0}
+    }else{inst[[5]]<-as.numeric(inst[[5]])}
+    ### second number of the comparison
+    if(str_detect(inst[7],"[:lower:]")){
+      if(registers$has(inst[[7]])){inst[[7]]<-registers$get(inst[[7]])
+      }else{registers$set(inst[[7]],0)
+        inst[7]<-0}
+    }else{inst[[7]]<-as.numeric(inst[[7]])}
+    ### find if the condition is met
+    condmet<-do.call(inst[[6]],list(inst[[5]],inst[[7]]))
+    ### if so
+    if(condmet){
+      ### increase if it is an increase instruction 
+      if(inst[[2]]=="inc"){registers$set(inst[[1]],registers$get(inst[[1]])+inst[[3]])
+      ### otherwise decrease
+      }else{registers$set(inst[[1]],registers$get(inst[[1]])-inst[[3]])}}
+    ### check the just changed register against the max - if it's higher, that's the new max
+    highestmax<-max(highestmax,registers$get(inst[[1]]))}
+highestmax}
+```
+
+```{r}
+part2<-findresult2()
+part2
+```

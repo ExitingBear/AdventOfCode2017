@@ -1,0 +1,54 @@
+---
+title: "Day 2 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("Day2Sample.txt")
+spreadsheet<-lapply(input,function(x){x<-as.numeric(unlist(str_split(x," ")))})
+```
+
+## Part 1
+```{r}
+checksums<-function(s=spreadsheet){
+  cs<-sapply(s,function(x){max(unlist(x))-min(unlist(x))})
+  cs<-sum(cs)
+cs}
+```
+
+```{r}
+part1<-checksums()
+part1
+```
+## Part 2
+
+```{r}
+  checksums2<-function(s=spreadsheet){
+    cs<-sapply(s,function(x){
+      ### find multiply all of the row by its reciprocals
+      m<-unlist(x)%*%t(1/unlist(x))
+      ### find which ones are the same as their floor (in other words evenly divisible)
+      m<-m[which(m==floor(m))]
+      ### find which are greater than 1
+      m<-m[which(m>1)]
+      ### return the quotient
+      m})
+    cs<-sum(cs)
+cs}
+```
+
+```{r}
+part2<-checksums2()
+part2
+```
+

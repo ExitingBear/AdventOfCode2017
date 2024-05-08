@@ -1,0 +1,119 @@
+---
+title: "Day 6 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+startingbank<-c(0,2,7,0)
+#input<-read_lines("Day6.txt")
+#startingbank<-as.numeric(unlist(str_split(input,"\t")))
+```
+
+
+## Part 1
+
+A quick function to balance the blocks and count until there's a repeat
+
+```{r}
+balancebanks<-function(banks){
+  ## create a dictionary to recognize repeats
+  beenthere<-dict()
+  ## flag 
+  keepgoing<-TRUE
+  ## counter to tell how many times this has happened
+  counter<-0
+  ## start
+  while(keepgoing){
+    ## find the position first max number of blocks
+    bank<-min(which(banks==max(banks)))
+    ## get the number
+    blocks<-banks[bank]
+    ## create a long vector of 0's to the number, followed by 1s - this will be multi-added
+    blockline<-c(rep(0,bank),rep(1,blocks))
+    ## remove the blocks from that bank
+    banks[bank]<-0
+    ## repeat add until there are no more blocks
+    ## if it's possible to reach the end of the row
+    while(length(blockline)>=length(banks)){
+      ## add the first row
+      banks<-banks+blockline[1:length(banks)]
+      ## remove that many from the vector & repeat
+      blockline<-tail(blockline,-length(banks))}
+    ## if it's not possible to reach a full row
+    if(length(blockline)>0){
+      ## add the remaining blocks
+      banks[1:length(blockline)]<-banks[1:length(blockline)]+blockline}
+    ## check to see if this a familiar pattern.  If so, flag to stop 
+    ## otherwise put this in the dictionary
+    if(beenthere$has(banks)){keepgoing<-FALSE}else{beenthere$set(banks,counter)}
+    ## update the counter
+    counter<-counter+1}
+  ## return the counter
+  cat(banks,"\n")
+  counter}
+```
+
+```{r}
+part1<-balancebanks(startingbank)
+part1
+```
+## Part 2
+Because we already know when the first time we hit the cycle was (saved in dictionary), the slight change is to subtract that from the counter.
+
+```{r}
+balancebanks2<-function(banks){
+  ## create a dictionary to recognize repeats
+  beenthere<-dict()
+  ## flag 
+  keepgoing<-TRUE
+  ## counter to tell how many times this has happened
+  counter<-0
+  ## start
+  while(keepgoing){
+    ## find the position first max number of blocks
+    bank<-min(which(banks==max(banks)))
+    ## get the number
+    blocks<-banks[bank]
+    ## create a long vector of 0's to the number, followed by 1s - this will be multi-added
+    blockline<-c(rep(0,bank),rep(1,blocks))
+    ## remove the blocks from that bank
+    banks[bank]<-0
+    ## repeat add until there are no more blocks
+    ## if it's possible to reach the end of the row
+    while(length(blockline)>=length(banks)){
+      ## add the first row
+      banks<-banks+blockline[1:length(banks)]
+      ## remove that many from the vector & repeat
+      blockline<-tail(blockline,-length(banks))}
+    ## if it's not possible to reach a full row
+    if(length(blockline)>0){
+      ## add the remaining blocks
+      banks[1:length(blockline)]<-banks[1:length(blockline)]+blockline}
+    ## check to see if this a familiar pattern.  If so, flag to stop 
+    ## otherwise put this in the dictionary
+    if(beenthere$has(banks)){
+      cyclelength<-counter-beenthere$get(banks)
+      keepgoing<-FALSE}else{beenthere$set(banks,counter)}
+    ## update the counter
+    counter<-counter+1}
+  ## return the counter
+  cat(banks,"\n")
+  cyclelength}
+```
+
+
+```{r}
+part2<-balancebanks2(startingbank)
+part2
+```
+

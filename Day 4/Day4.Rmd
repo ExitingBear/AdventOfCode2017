@@ -1,0 +1,65 @@
+---
+title: "Day 4 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+#input<-read_lines("Day4Sample.txt")
+input<-read_lines("../../AoCData/AOC2017/Day4.txt")
+
+```
+
+```{r}
+passphrasevalidator<-function(phraselist){
+  validator<-sapply(phraselist,
+                    function(x){
+                      ### use the table function to find out how many there are - sort by most frequent
+                      x<-sort(table(unlist(str_split(x," "))),decreasing=TRUE)
+                      ### if the most frequent is >1, that is invalid
+                      x<-if(x[1]>1){FALSE}else{TRUE}
+                    x})
+                    
+validator}
+```
+
+```{r}
+part1<-sum(passphrasevalidator(input))
+part1
+```
+## Part 2
+Make a few small changes to see if there are jumbled words (specifically, unjumble them)
+```{r}
+pv2<-function(phraselist){
+  validator<-sapply(phraselist,
+                    function(x){
+                      ### split the line into separate words
+                      x<-unlist(str_split(x," "))
+                      ### alphabetize each word individually
+                      x<-sapply(x,function(y){
+                        y<-str_flatten(sort(unlist(str_split(y,""))))
+                        y})
+                      ### use the table function to find out how many there are - sort by most frequent
+                      x<-sort(table(unlist(str_split(x," "))),decreasing=TRUE)
+                      ### if the most frequent is >1, that is invalid
+                      x<-if(x[1]>1){FALSE}else{TRUE}
+                    x})
+                    
+validator}
+```
+
+
+```{r}
+part2<-sum(pv2(input))
+part2
+```
+
