@@ -11,7 +11,7 @@
 
 
 
-<title>Day 16 Notebook</title>
+<title>Day 15 Notebook</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1746,7 +1746,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Day 16 Notebook</h1>
+<h1 class="title toc-ignore">Day 15 Notebook</h1>
 
 </div>
 
@@ -1756,97 +1756,65 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2lucHV0PC1yZWFkX2xpbmVzKFwiRGF5MTZTYW1wbGUudHh0XCIpXG5pbnB1dDwtcmVhZF9saW5lcyhcIi4uLy4uL0FvQ0RhdGEvQU9DMjAxNy9EYXkxNi50eHRcIilcblxuYGBgIn0= -->
-<pre class="r"><code>#input&lt;-read_lines(&quot;Day16Sample.txt&quot;)
-input&lt;-read_lines(&quot;../../AoCData/AOC2017/Day16.txt&quot;)
-</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<div id="part-1" class="section level2">
-<h2>Part 1</h2>
-<p>Dance you programs, dance!!!</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2hvcmVvPC1mdW5jdGlvbihkYW5jZXJzPWxldHRlcnNbMToxNl0sZGFuY2Vtb3Zlcz1pbnB1dCl7XG4gIGRhbmNlbW92ZXM8LXVubGlzdChzdHJfc3BsaXQoZGFuY2Vtb3ZlcyxcIixcIikpXG4gICBmb3IoaSBpbiAxOmxlbmd0aChkYW5jZW1vdmVzKSl7XG4gICAgICMjIHNwbGl0IGludG8gcGllY2VzXG4gICAgIGRtPC1jKHN0cl9zdWIoZGFuY2Vtb3Zlc1tpXSwxLDEpLHVubGlzdChzdHJfc3BsaXQoc3RyX3N1YihkYW5jZW1vdmVzW2ldLDIpLFwiL1wiKSkpXG4gICAgc3dpdGNoKGRtWzFdLFxuICAgICAgICAgICBcInNcIj17XG4gICAgICAgICAgICAgWDwtYXMubnVtZXJpYyhkbVsyXSlcbiAgICAgICAgICAgICBkYW5jZXJzPC1jKGRhbmNlcnNbKGxlbmd0aChkYW5jZXJzKS1YKzEpOmxlbmd0aChkYW5jZXJzKV0sZGFuY2Vyc1sxOihsZW5ndGgoZGFuY2VycyktWCldKX0sXG4gICAgICAgICAgIFwieFwiPXtcbiAgICAgICAgICAgICBBPC1hcy5udW1lcmljKGRtWzJdKSsxXG4gICAgICAgICAgICAgQjwtYXMubnVtZXJpYyhkbVszXSkrMVxuICAgICAgICAgICAgIHBoPC1kYW5jZXJzW0FdXG4gICAgICAgICAgICAgZGFuY2Vyc1tBXTwtZGFuY2Vyc1tCXVxuICAgICAgICAgICAgIGRhbmNlcnNbQl08LXBofSxcbiAgICAgICAgICAgXCJwXCI9e1xuICAgICAgICAgICAgIEE8LXdoaWNoKGRhbmNlcnM9PWRtWzJdKVxuICAgICAgICAgICAgIEI8LXdoaWNoKGRhbmNlcnM9PWRtWzNdKVxuICAgICAgICAgICAgIGRhbmNlcnNbQV08LWRtWzNdXG4gICAgICAgICAgICAgZGFuY2Vyc1tCXTwtZG1bMl19LFxuICAgICAgICAgICBjYXQoXCJzb21ldGhpbmcgd2VudCB3cm9uZ1xcblwiKSlcbiAgICAgXG4gICAgIH1cbiAgZGFuY2Vyc31cblxuYGBgIn0= -->
-<pre class="r"><code>choreo&lt;-function(dancers=letters[1:16],dancemoves=input){
-  dancemoves&lt;-unlist(str_split(dancemoves,&quot;,&quot;))
-   for(i in 1:length(dancemoves)){
-     ## split into pieces
-     dm&lt;-c(str_sub(dancemoves[i],1,1),unlist(str_split(str_sub(dancemoves[i],2),&quot;/&quot;)))
-    switch(dm[1],
-           &quot;s&quot;={
-             X&lt;-as.numeric(dm[2])
-             dancers&lt;-c(dancers[(length(dancers)-X+1):length(dancers)],dancers[1:(length(dancers)-X)])},
-           &quot;x&quot;={
-             A&lt;-as.numeric(dm[2])+1
-             B&lt;-as.numeric(dm[3])+1
-             ph&lt;-dancers[A]
-             dancers[A]&lt;-dancers[B]
-             dancers[B]&lt;-ph},
-           &quot;p&quot;={
-             A&lt;-which(dancers==dm[2])
-             B&lt;-which(dancers==dm[3])
-             dancers[A]&lt;-dm[3]
-             dancers[B]&lt;-dm[2]},
-           cat(&quot;something went wrong\n&quot;))
-     
-     }
-  dancers}
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoicm9ib3RkdWVsPC1mdW5jdGlvbihhLGIsdHVybnMpe1xuICBpdHNhdGllPC0wXG4gIGZvcihpIGluIDE6dHVybnMpe1xuICAgICMjIGNhbGN1bGF0ZSBuZXh0IHZhbHVlc1xuICAgIGE8LSgxNjgwNyphKSUlMjE0NzQ4MzY0N1xuICAgIGI8LSg0ODI3MSpiKSUlMjE0NzQ4MzY0N1xuICAgICMjIHRoZSBmaW5hbCAxNiBpcyBtb2QgNjU1MzYsIHNvIHRob3NlIGFyZSB0aGUgb25seSBvbmVzIHRvIHN0YXkgaW50ZXJlc3RlZCBpblxuICAgIGlmKGElJTY1NTM2PT1iJSU2NTUzNil7aXRzYXRpZTwtaXRzYXRpZSsxfVxuICAgIH1cbiAgaXRzYXRpZX0ifQ== -->
+<pre class="r"><code>robotduel&lt;-function(a,b,turns){
+  itsatie&lt;-0
+  for(i in 1:turns){
+    ## calculate next values
+    a&lt;-(16807*a)%%2147483647
+    b&lt;-(48271*b)%%2147483647
+    ## the final 16 is mod 65536, so those are the only ones to stay interested in
+    if(a%%65536==b%%65536){itsatie&lt;-itsatie+1}
+    }
+  itsatie}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDE8LWNob3JlbygpXG5gYGAifQ== -->
-<pre class="r"><code>part1&lt;-choreo()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbInBhcnQxPC1yb2JvdGR1ZWwoNjUsODkyMSw0MDAwMDAwMCkiLCJwYXJ0MSJdfQ== -->
+<pre class="r"><code>part1&lt;-robotduel(65,8921,40000000)
+part1</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiMTAwMDAgXG4ifQ== -->
-<pre><code>10000 </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDFcbmBgYCJ9 -->
-<pre class="r"><code>part1</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwibmFtZGdrYmhpZnBjZWxvalwiXG4ifQ== -->
-<pre><code>[1] &quot;namdgkbhifpceloj&quot;</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDU4OFxuIn0= -->
+<pre><code>[1] 588</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="part-2" class="section level2">
-<h2>Part 2</h2>
-<p>Option 1 - run it a billion times. Option 2 - figure out if it
-repeats. And only run it that many times.</p>
-<!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbImtpZGRpbmdtZTwtbGV0dGVyc1sxOjE2XSIsImZvcihpIGluIDE6MTAwMDAwKXsiLCJraWRkaW5nbWU8LWNob3JlbyhraWRkaW5nbWUsaW5wdXQpIiwiaWYoYWxsKGtpZGRpbmdtZVsxOjJdPT1sZXR0ZXJzWzE6Ml0pKXtjYXQoaSxraWRkaW5nbWUsXCJcXG5cIil9fSJdfQ== -->
-<pre class="r"><code>kiddingme&lt;-letters[1:16]
-for(i in 1:100000){
-kiddingme&lt;-choreo(kiddingme,input)
-if(all(kiddingme[1:2]==letters[1:2])){cat(i,kiddingme,&quot;\n&quot;)}}</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoibG9uZ3JvYm90ZHVlbDwtZnVuY3Rpb24oYSxiLHR1cm5zKXtcbiAgaXRzYXRpZTwtMFxuICBmb3IoaSBpbiAxOnR1cm5zKXtcbiAgICAjI2dlbmVyYXRlIHRoZSBmaXJzdC9uZXh0IGFcbiAgICBhPC0oMTY4MDcqYSklJTIxNDc0ODM2NDdcbiAgICAjI2tlZXAgZ2VuZXJhdGluZyBhIHVudGlsIHNvbWV0aGluZyBpcyBkaXZpc2libGUgYnkgNFxuICAgIHdoaWxlKGElJTQhPTApe1xuICAgIGE8LSgxNjgwNyphKSUlMjE0NzQ4MzY0N31cbiAgICAjI2dlbmVyYXRlIHRoZSBmaXJzdC9uZXh0IGJcbiAgICBiPC0oNDgyNzEqYiklJTIxNDc0ODM2NDdcbiAgICAjIyBrZWVwIGdlbmVyYXRpbmcgdW50aWwgYiBpcyBkaXZpc2libGUgYnkgOFxuICAgIHdoaWxlKGIlJTghPTApe1xuICAgIGI8LSg0ODI3MSpiKSUlMjE0NzQ4MzY0N31cbiAgICAjI2NvbXBhcmVcbiAgICBpZihhJSU2NTUzNj09YiUlNjU1MzYpe2l0c2F0aWU8LWl0c2F0aWUrMX19XG4gIGl0c2F0aWV9In0= -->
+<pre class="r"><code>longrobotduel&lt;-function(a,b,turns){
+  itsatie&lt;-0
+  for(i in 1:turns){
+    ##generate the first/next a
+    a&lt;-(16807*a)%%2147483647
+    ##keep generating a until something is divisible by 4
+    while(a%%4!=0){
+    a&lt;-(16807*a)%%2147483647}
+    ##generate the first/next b
+    b&lt;-(48271*b)%%2147483647
+    ## keep generating until b is divisible by 8
+    while(b%%8!=0){
+    b&lt;-(48271*b)%%2147483647}
+    ##compare
+    if(a%%65536==b%%65536){itsatie&lt;-itsatie+1}}
+  itsatie}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>As it repeats every 60 -</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua2lkZGluZ21lPC1sZXR0ZXJzWzE6MTZdXG5mb3IoaSBpbiAxOigxMDAwMDAwMDAwJSU2MCkpe1xua2lkZGluZ21lPC1jaG9yZW8oa2lkZGluZ21lLGlucHV0KVxuaWYoYWxsKGtpZGRpbmdtZVsxOjJdPT1sZXR0ZXJzWzE6Ml0pKXtjYXQoaSxraWRkaW5nbWUsXCJcXG5cIil9fVxuc3RyX2ZsYXR0ZW4oa2lkZGluZ21lKVxuYGBgIn0= -->
-<pre class="r"><code>kiddingme&lt;-letters[1:16]
-for(i in 1:(1000000000%%60)){
-kiddingme&lt;-choreo(kiddingme,input)
-if(all(kiddingme[1:2]==letters[1:2])){cat(i,kiddingme,&quot;\n&quot;)}}
-str_flatten(kiddingme)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbInBhcnQyPC1sb25ncm9ib3RkdWVsKDY1LDg5MjEsNTAwMDAwMCkiLCJwYXJ0MiJdfQ== -->
+<pre class="r"><code>part2&lt;-longrobotduel(65,8921,5000000)
+part2</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiaWJtY2hrbG5vZmpwZGVhZ1wiXG4ifQ== -->
-<pre><code>[1] &quot;ibmchklnofjpdeag&quot;</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDMwOVxuIn0= -->
+<pre><code>[1] 309</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
-</div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAxNiBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KYGBge3J9DQppbnB1dDwtcmVhZF9saW5lcygiLi4vLi4vQW9DRGF0YS9BT0MyMDE3L0RheTE2LnR4dCIpDQoNCmBgYA0KDQojIyBQYXJ0IDENCg0KRGFuY2UgeW91IHByb2dyYW1zLCBkYW5jZSEhIQ0KYGBge3J9DQpjaG9yZW88LWZ1bmN0aW9uKGRhbmNlcnM9bGV0dGVyc1sxOjE2XSxkYW5jZW1vdmVzPWlucHV0KXsNCiAgZGFuY2Vtb3ZlczwtdW5saXN0KHN0cl9zcGxpdChkYW5jZW1vdmVzLCIsIikpDQogICBmb3IoaSBpbiAxOmxlbmd0aChkYW5jZW1vdmVzKSl7DQogICAgICMjIHNwbGl0IGludG8gcGllY2VzDQogICAgIGRtPC1jKHN0cl9zdWIoZGFuY2Vtb3Zlc1tpXSwxLDEpLHVubGlzdChzdHJfc3BsaXQoc3RyX3N1YihkYW5jZW1vdmVzW2ldLDIpLCIvIikpKQ0KICAgIHN3aXRjaChkbVsxXSwNCiAgICAgICAgICAgIyNyZW9yZGVycyB0aGUgdmVjdG9yDQogICAgICAgICAgICJzIj17DQogICAgICAgICAgICAgWDwtYXMubnVtZXJpYyhkbVsyXSkNCiAgICAgICAgICAgICBkYW5jZXJzPC1jKGRhbmNlcnNbKGxlbmd0aChkYW5jZXJzKS1YKzEpOmxlbmd0aChkYW5jZXJzKV0sZGFuY2Vyc1sxOihsZW5ndGgoZGFuY2VycyktWCldKX0sDQogICAgICAgICAgICMjIHF1aWNrbHkgdXNlcyBhIHBsYWNlaG9sZGVyIHRvIG1vdmUgdGhpbmdzIGFyb3VuZA0KICAgICAgICAgICAieCI9ew0KICAgICAgICAgICAgIEE8LWFzLm51bWVyaWMoZG1bMl0pKzENCiAgICAgICAgICAgICBCPC1hcy5udW1lcmljKGRtWzNdKSsxDQogICAgICAgICAgICAgcGg8LWRhbmNlcnNbQV0NCiAgICAgICAgICAgICBkYW5jZXJzW0FdPC1kYW5jZXJzW0JdDQogICAgICAgICAgICAgZGFuY2Vyc1tCXTwtcGh9LA0KICAgICAgICAgICAjIyBzd2l0Y2hlcyB0d28gZGFuY2Vycw0KICAgICAgICAgICAicCI9ew0KICAgICAgICAgICAgIEE8LXdoaWNoKGRhbmNlcnM9PWRtWzJdKQ0KICAgICAgICAgICAgIEI8LXdoaWNoKGRhbmNlcnM9PWRtWzNdKQ0KICAgICAgICAgICAgIGRhbmNlcnNbQV08LWRtWzNdDQogICAgICAgICAgICAgZGFuY2Vyc1tCXTwtZG1bMl19LA0KICAgICAgICAgICBjYXQoInNvbWV0aGluZyB3ZW50IHdyb25nXG4iKSkNCiAgICAgDQogICAgIH0NCiAgZGFuY2Vyc30NCg0KYGBgDQoNCmBgYHtyfQ0KcGFydDE8LXN0cl9mbGF0dGVuKGNob3JlbygpKQ0KcGFydDENCmBgYA0KDQojIyBQYXJ0IDINCg0KT3B0aW9uIDEgLSBydW4gaXQgYSBiaWxsaW9uIHRpbWVzLg0KT3B0aW9uIDIgLSBmaWd1cmUgb3V0IGlmIGl0IHJlcGVhdHMuICBBbmQgb25seSBydW4gaXQgdGhhdCBtYW55IHRpbWVzLg0KDQpgYGB7cixldmFsPUZBTFNFfQ0Ka2lkZGluZ21lPC1sZXR0ZXJzWzE6MTZdDQpmb3IoaSBpbiAxOjEwMDAwMCl7DQpraWRkaW5nbWU8LWNob3JlbyhraWRkaW5nbWUsaW5wdXQpDQppZihhbGwoa2lkZGluZ21lWzE6Ml09PWxldHRlcnNbMToyXSkpe2NhdChpLGtpZGRpbmdtZSwiXG4iKX19DQpgYGANCkFzIGl0IHJlcGVhdHMgZXZlcnkgNjAgLQ0KYGBge3J9DQpraWRkaW5nbWU8LWxldHRlcnNbMToxNl0NCmZvcihpIGluIDE6KDEwMDAwMDAwMDAlJTYwKSl7DQpraWRkaW5nbWU8LWNob3JlbyhraWRkaW5nbWUsaW5wdXQpDQppZihhbGwoa2lkZGluZ21lWzE6Ml09PWxldHRlcnNbMToyXSkpe2NhdChpLGtpZGRpbmdtZSwiXG4iKX19DQpzdHJfZmxhdHRlbihraWRkaW5nbWUpDQpgYGANCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAxNSBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KYGBge3J9DQpyb2JvdGR1ZWw8LWZ1bmN0aW9uKGEsYix0dXJucyl7DQogIGl0c2F0aWU8LTANCiAgZm9yKGkgaW4gMTp0dXJucyl7DQogICAgIyMgY2FsY3VsYXRlIG5leHQgdmFsdWVzDQogICAgYTwtKDE2ODA3KmEpJSUyMTQ3NDgzNjQ3DQogICAgYjwtKDQ4MjcxKmIpJSUyMTQ3NDgzNjQ3DQogICAgIyMgdGhlIGZpbmFsIDE2IGlzIG1vZCA2NTUzNiwgc28gdGhvc2UgYXJlIHRoZSBvbmx5IG9uZXMgdG8gc3RheSBpbnRlcmVzdGVkIGluDQogICAgaWYoYSUlNjU1MzY9PWIlJTY1NTM2KXtpdHNhdGllPC1pdHNhdGllKzF9DQogICAgfQ0KICBpdHNhdGllfQ0KDQpgYGANCg0KYGBge3J9DQpwYXJ0MTwtcm9ib3RkdWVsKDY1LDg5MjEsNDAwMDAwMDApDQpwYXJ0MQ0KYGBgDQpgYGB7cn0NCmxvbmdyb2JvdGR1ZWw8LWZ1bmN0aW9uKGEsYix0dXJucyl7DQogIGl0c2F0aWU8LTANCiAgZm9yKGkgaW4gMTp0dXJucyl7DQogICAgIyNnZW5lcmF0ZSB0aGUgZmlyc3QvbmV4dCBhDQogICAgYTwtKDE2ODA3KmEpJSUyMTQ3NDgzNjQ3DQogICAgIyNrZWVwIGdlbmVyYXRpbmcgYSB1bnRpbCBzb21ldGhpbmcgaXMgZGl2aXNpYmxlIGJ5IDQNCiAgICB3aGlsZShhJSU0IT0wKXsNCiAgICBhPC0oMTY4MDcqYSklJTIxNDc0ODM2NDd9DQogICAgIyNnZW5lcmF0ZSB0aGUgZmlyc3QvbmV4dCBiDQogICAgYjwtKDQ4MjcxKmIpJSUyMTQ3NDgzNjQ3DQogICAgIyMga2VlcCBnZW5lcmF0aW5nIHVudGlsIGIgaXMgZGl2aXNpYmxlIGJ5IDgNCiAgICB3aGlsZShiJSU4IT0wKXsNCiAgICBiPC0oNDgyNzEqYiklJTIxNDc0ODM2NDd9DQogICAgIyNjb21wYXJlDQogICAgaWYoYSUlNjU1MzY9PWIlJTY1NTM2KXtpdHNhdGllPC1pdHNhdGllKzF9fQ0KICBpdHNhdGllfQ0KDQpgYGANCg0KDQpgYGB7cn0NCnBhcnQyPC1sb25ncm9ib3RkdWVsKDY1LDg5MjEsNTAwMDAwMCkNCnBhcnQyDQpgYGANCg0K</div>
 
 
 
@@ -1893,7 +1861,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Day16.Rmd");
+  window.initializeSourceEmbed("Day15.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>

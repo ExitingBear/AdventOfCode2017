@@ -11,7 +11,7 @@
 
 
 
-<title>Day 16 Notebook</title>
+<title>Day 13 Notebook</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1746,7 +1746,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Day 16 Notebook</h1>
+<h1 class="title toc-ignore">Day 13 Notebook</h1>
 
 </div>
 
@@ -1756,97 +1756,91 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2lucHV0PC1yZWFkX2xpbmVzKFwiRGF5MTZTYW1wbGUudHh0XCIpXG5pbnB1dDwtcmVhZF9saW5lcyhcIi4uLy4uL0FvQ0RhdGEvQU9DMjAxNy9EYXkxNi50eHRcIilcblxuYGBgIn0= -->
-<pre class="r"><code>#input&lt;-read_lines(&quot;Day16Sample.txt&quot;)
-input&lt;-read_lines(&quot;../../AoCData/AOC2017/Day16.txt&quot;)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbImlucHV0PC1yZWFkX2xpbmVzKFwiRGF5MTNTYW1wbGUudHh0XCIpIiwic2Nhbm5lcnM8LWxpc3QoKSIsIiMjIyBjcmVhdGUgdGhlIHNjYW5uZXJzIGFzIGxpc3Qgb2YgdmVjdG9ycyBvZiBjKGRlcHRoLGxlbmd0aCkiLCJmb3IoaSBpbiAxOmxlbmd0aChpbnB1dCkpe1xuICBzPC1hcy5udW1lcmljKHVubGlzdChzdHJfc3BsaXQoKHN0cl9yZW1vdmVfYWxsKGlucHV0W2ldLFwiOlwiKSksXCIgXCIpKSlcbiAgc2Nhbm5lcnM8LWMoc2Nhbm5lcnMsbGlzdChzKSl9Il19 -->
+<pre class="r"><code>input&lt;-read_lines(&quot;Day13Sample.txt&quot;)
+scanners&lt;-list()
+### create the scanners as list of vectors of c(depth,length)
+for(i in 1:length(input)){
+  s&lt;-as.numeric(unlist(str_split((str_remove_all(input[i],&quot;:&quot;)),&quot; &quot;)))
+  scanners&lt;-c(scanners,list(s))}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="part-1" class="section level2">
 <h2>Part 1</h2>
-<p>Dance you programs, dance!!!</p>
+<p>Create a function to say whether or not you were caught</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2hvcmVvPC1mdW5jdGlvbihkYW5jZXJzPWxldHRlcnNbMToxNl0sZGFuY2Vtb3Zlcz1pbnB1dCl7XG4gIGRhbmNlbW92ZXM8LXVubGlzdChzdHJfc3BsaXQoZGFuY2Vtb3ZlcyxcIixcIikpXG4gICBmb3IoaSBpbiAxOmxlbmd0aChkYW5jZW1vdmVzKSl7XG4gICAgICMjIHNwbGl0IGludG8gcGllY2VzXG4gICAgIGRtPC1jKHN0cl9zdWIoZGFuY2Vtb3Zlc1tpXSwxLDEpLHVubGlzdChzdHJfc3BsaXQoc3RyX3N1YihkYW5jZW1vdmVzW2ldLDIpLFwiL1wiKSkpXG4gICAgc3dpdGNoKGRtWzFdLFxuICAgICAgICAgICBcInNcIj17XG4gICAgICAgICAgICAgWDwtYXMubnVtZXJpYyhkbVsyXSlcbiAgICAgICAgICAgICBkYW5jZXJzPC1jKGRhbmNlcnNbKGxlbmd0aChkYW5jZXJzKS1YKzEpOmxlbmd0aChkYW5jZXJzKV0sZGFuY2Vyc1sxOihsZW5ndGgoZGFuY2VycyktWCldKX0sXG4gICAgICAgICAgIFwieFwiPXtcbiAgICAgICAgICAgICBBPC1hcy5udW1lcmljKGRtWzJdKSsxXG4gICAgICAgICAgICAgQjwtYXMubnVtZXJpYyhkbVszXSkrMVxuICAgICAgICAgICAgIHBoPC1kYW5jZXJzW0FdXG4gICAgICAgICAgICAgZGFuY2Vyc1tBXTwtZGFuY2Vyc1tCXVxuICAgICAgICAgICAgIGRhbmNlcnNbQl08LXBofSxcbiAgICAgICAgICAgXCJwXCI9e1xuICAgICAgICAgICAgIEE8LXdoaWNoKGRhbmNlcnM9PWRtWzJdKVxuICAgICAgICAgICAgIEI8LXdoaWNoKGRhbmNlcnM9PWRtWzNdKVxuICAgICAgICAgICAgIGRhbmNlcnNbQV08LWRtWzNdXG4gICAgICAgICAgICAgZGFuY2Vyc1tCXTwtZG1bMl19LFxuICAgICAgICAgICBjYXQoXCJzb21ldGhpbmcgd2VudCB3cm9uZ1xcblwiKSlcbiAgICAgXG4gICAgIH1cbiAgZGFuY2Vyc31cblxuYGBgIn0= -->
-<pre class="r"><code>choreo&lt;-function(dancers=letters[1:16],dancemoves=input){
-  dancemoves&lt;-unlist(str_split(dancemoves,&quot;,&quot;))
-   for(i in 1:length(dancemoves)){
-     ## split into pieces
-     dm&lt;-c(str_sub(dancemoves[i],1,1),unlist(str_split(str_sub(dancemoves[i],2),&quot;/&quot;)))
-    switch(dm[1],
-           &quot;s&quot;={
-             X&lt;-as.numeric(dm[2])
-             dancers&lt;-c(dancers[(length(dancers)-X+1):length(dancers)],dancers[1:(length(dancers)-X)])},
-           &quot;x&quot;={
-             A&lt;-as.numeric(dm[2])+1
-             B&lt;-as.numeric(dm[3])+1
-             ph&lt;-dancers[A]
-             dancers[A]&lt;-dancers[B]
-             dancers[B]&lt;-ph},
-           &quot;p&quot;={
-             A&lt;-which(dancers==dm[2])
-             B&lt;-which(dancers==dm[3])
-             dancers[A]&lt;-dm[3]
-             dancers[B]&lt;-dm[2]},
-           cat(&quot;something went wrong\n&quot;))
-     
-     }
-  dancers}
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoic2V2ZXJpdHltZWFzdXJlPC1mdW5jdGlvbihzdGFydGluZz0wLHNjbnJzPXNjYW5uZXJzKXtcbiMjIyBzZXQgc2V2ZXJpdHkgdG8gMFxuICAgIHNldmVyaXR5PC0wXG4gIGZvcihpIGluIDE6bGVuZ3RoKHNjYW5uZXJzKSl7XG4gICAgczwtc2Nhbm5lcnNbW2ldXVxuICAgICMjIyBlYWNoIHNjYW5uZXIgaXMgb24gYSBjeWNsZSBvZiAyKihzY2FubmVybGVuZ3RoLTEpXG4gICAgIyMjIGEgY29sbGlzaW9uIHdpbGwgaGFwcGVuIGlmIGl0IGlzIGF0IDAgb24gdGhhdCBjeWNsZSAtIG9mZnNldCBvZiBieSB3aGVuIHRoZSBzdGFydCBpcy5cbiAgICBpZigoc3RhcnRpbmcrc1sxXSklJSgyKihzWzJdLTEpKT09MCl7XG4gICAgICAjIyMgaWYgdGhlcmUncyBhIGNvbGxpc2lvbiwgYWRkIHRoZSBzZXZlcml0eSAoZGVwdGgqbGVuZ3RoKSB0byB0aGUgc2V2ZXJpdHkgY291bnRlclxuICAgICAgc2V2ZXJpdHk8LXNldmVyaXR5K3Byb2Qocyl9fVxuICBzZXZlcml0eX0ifQ== -->
+<pre class="r"><code>severitymeasure&lt;-function(starting=0,scnrs=scanners){
+### set severity to 0
+    severity&lt;-0
+  for(i in 1:length(scanners)){
+    s&lt;-scanners[[i]]
+    ### each scanner is on a cycle of 2*(scannerlength-1)
+    ### a collision will happen if it is at 0 on that cycle - offset of by when the start is.
+    if((starting+s[1])%%(2*(s[2]-1))==0){
+      ### if there&#39;s a collision, add the severity (depth*length) to the severity counter
+      severity&lt;-severity+prod(s)}}
+  severity}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDE8LWNob3JlbygpXG5gYGAifQ== -->
-<pre class="r"><code>part1&lt;-choreo()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoic2V2ZXJpdHltZWFzdXJlKDAsc2Nhbm5lcnMpIn0= -->
+<pre class="r"><code>severitymeasure(0,scanners)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiMTAwMDAgXG4ifQ== -->
-<pre><code>10000 </code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDI0XG4ifQ== -->
+<pre><code>[1] 24</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDFcbmBgYCJ9 -->
-<pre class="r"><code>part1</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoicGFydDE8LXBhcnQxIn0= -->
+<pre class="r"><code>part1&lt;-part1</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwibmFtZGdrYmhpZnBjZWxvalwiXG4ifQ== -->
-<pre><code>[1] &quot;namdgkbhifpceloj&quot;</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
 <div id="part-2" class="section level2">
 <h2>Part 2</h2>
-<p>Option 1 - run it a billion times. Option 2 - figure out if it
-repeats. And only run it that many times.</p>
+<p>So - there’s the right way and there’s BRUTE FORCE!!</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbImtpZGRpbmdtZTwtbGV0dGVyc1sxOjE2XSIsImZvcihpIGluIDE6MTAwMDAwKXsiLCJraWRkaW5nbWU8LWNob3JlbyhraWRkaW5nbWUsaW5wdXQpIiwiaWYoYWxsKGtpZGRpbmdtZVsxOjJdPT1sZXR0ZXJzWzE6Ml0pKXtjYXQoaSxraWRkaW5nbWUsXCJcXG5cIil9fSJdfQ== -->
-<pre class="r"><code>kiddingme&lt;-letters[1:16]
-for(i in 1:100000){
-kiddingme&lt;-choreo(kiddingme,input)
-if(all(kiddingme[1:2]==letters[1:2])){cat(i,kiddingme,&quot;\n&quot;)}}</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiY2F0Y2htZTwtZnVuY3Rpb24oc3RhcnRpbmc9MCxzY25ycz1zY2FubmVycyl7XG4gIGNhdWdodDwtRkFMU0VcbiAgaTwtMVxuICB3aGlsZShpPD1sZW5ndGgoc2Nhbm5lcnMpJiYhY2F1Z2h0KXtcbiAgICAjIyMgaWYgdGhlcmUncyBhIGNvbGxpc2lvbiwgbWFyayBhcyBUUlVFLiAgU3RvcFxuICAgIHM8LXNjYW5uZXJzW1tpXV1cbiAgICBpZigoc3RhcnRpbmcrc1sxXSklJSgyKihzWzJdLTEpKT09MCl7XG4gICAgICBjYXVnaHQ8LVRSVUVcbiAgICAgIGJyZWFrfVxuICAgIGk8LWkrMX1cbmNhdWdodH0ifQ== -->
+<pre class="r"><code>catchme&lt;-function(starting=0,scnrs=scanners){
+  caught&lt;-FALSE
+  i&lt;-1
+  while(i&lt;=length(scanners)&amp;&amp;!caught){
+    ### if there&#39;s a collision, mark as TRUE.  Stop
+    s&lt;-scanners[[i]]
+    if((starting+s[1])%%(2*(s[2]-1))==0){
+      caught&lt;-TRUE
+      break}
+    i&lt;-i+1}
+caught}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>As it repeats every 60 -</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua2lkZGluZ21lPC1sZXR0ZXJzWzE6MTZdXG5mb3IoaSBpbiAxOigxMDAwMDAwMDAwJSU2MCkpe1xua2lkZGluZ21lPC1jaG9yZW8oa2lkZGluZ21lLGlucHV0KVxuaWYoYWxsKGtpZGRpbmdtZVsxOjJdPT1sZXR0ZXJzWzE6Ml0pKXtjYXQoaSxraWRkaW5nbWUsXCJcXG5cIil9fVxuc3RyX2ZsYXR0ZW4oa2lkZGluZ21lKVxuYGBgIn0= -->
-<pre class="r"><code>kiddingme&lt;-letters[1:16]
-for(i in 1:(1000000000%%60)){
-kiddingme&lt;-choreo(kiddingme,input)
-if(all(kiddingme[1:2]==letters[1:2])){cat(i,kiddingme,&quot;\n&quot;)}}
-str_flatten(kiddingme)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbImk8LTAiLCJrZWVwZ29pbmc8LVRSVUUiLCJ3aGlsZShrZWVwZ29pbmcpe1xuICAjIyMgc3RhcnQgYXQgdGltZT0xICYga2VlcCBnb2luZyB1bnRpbCBjYXVnaHQgaXMgRkFMU0VcbiAgeDwtY2F0Y2htZShpLHNjYW5uZXJzKVxuICBpZigheCl7a2VlcGdvaW5nPUZBTFNFXG4gIH1lbHNle1xuICAgIGk8LWkrMX19IiwicGFydDI8LWkiLCJwYXJ0MiJdfQ== -->
+<pre class="r"><code>i&lt;-0
+keepgoing&lt;-TRUE
+while(keepgoing){
+  ### start at time=1 &amp; keep going until caught is FALSE
+  x&lt;-catchme(i,scanners)
+  if(!x){keepgoing=FALSE
+  }else{
+    i&lt;-i+1}}
+part2&lt;-i
+part2</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiaWJtY2hrbG5vZmpwZGVhZ1wiXG4ifQ== -->
-<pre><code>[1] &quot;ibmchklnofjpdeag&quot;</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEwXG4ifQ== -->
+<pre><code>[1] 10</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAxNiBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KYGBge3J9DQppbnB1dDwtcmVhZF9saW5lcygiLi4vLi4vQW9DRGF0YS9BT0MyMDE3L0RheTE2LnR4dCIpDQoNCmBgYA0KDQojIyBQYXJ0IDENCg0KRGFuY2UgeW91IHByb2dyYW1zLCBkYW5jZSEhIQ0KYGBge3J9DQpjaG9yZW88LWZ1bmN0aW9uKGRhbmNlcnM9bGV0dGVyc1sxOjE2XSxkYW5jZW1vdmVzPWlucHV0KXsNCiAgZGFuY2Vtb3ZlczwtdW5saXN0KHN0cl9zcGxpdChkYW5jZW1vdmVzLCIsIikpDQogICBmb3IoaSBpbiAxOmxlbmd0aChkYW5jZW1vdmVzKSl7DQogICAgICMjIHNwbGl0IGludG8gcGllY2VzDQogICAgIGRtPC1jKHN0cl9zdWIoZGFuY2Vtb3Zlc1tpXSwxLDEpLHVubGlzdChzdHJfc3BsaXQoc3RyX3N1YihkYW5jZW1vdmVzW2ldLDIpLCIvIikpKQ0KICAgIHN3aXRjaChkbVsxXSwNCiAgICAgICAgICAgIyNyZW9yZGVycyB0aGUgdmVjdG9yDQogICAgICAgICAgICJzIj17DQogICAgICAgICAgICAgWDwtYXMubnVtZXJpYyhkbVsyXSkNCiAgICAgICAgICAgICBkYW5jZXJzPC1jKGRhbmNlcnNbKGxlbmd0aChkYW5jZXJzKS1YKzEpOmxlbmd0aChkYW5jZXJzKV0sZGFuY2Vyc1sxOihsZW5ndGgoZGFuY2VycyktWCldKX0sDQogICAgICAgICAgICMjIHF1aWNrbHkgdXNlcyBhIHBsYWNlaG9sZGVyIHRvIG1vdmUgdGhpbmdzIGFyb3VuZA0KICAgICAgICAgICAieCI9ew0KICAgICAgICAgICAgIEE8LWFzLm51bWVyaWMoZG1bMl0pKzENCiAgICAgICAgICAgICBCPC1hcy5udW1lcmljKGRtWzNdKSsxDQogICAgICAgICAgICAgcGg8LWRhbmNlcnNbQV0NCiAgICAgICAgICAgICBkYW5jZXJzW0FdPC1kYW5jZXJzW0JdDQogICAgICAgICAgICAgZGFuY2Vyc1tCXTwtcGh9LA0KICAgICAgICAgICAjIyBzd2l0Y2hlcyB0d28gZGFuY2Vycw0KICAgICAgICAgICAicCI9ew0KICAgICAgICAgICAgIEE8LXdoaWNoKGRhbmNlcnM9PWRtWzJdKQ0KICAgICAgICAgICAgIEI8LXdoaWNoKGRhbmNlcnM9PWRtWzNdKQ0KICAgICAgICAgICAgIGRhbmNlcnNbQV08LWRtWzNdDQogICAgICAgICAgICAgZGFuY2Vyc1tCXTwtZG1bMl19LA0KICAgICAgICAgICBjYXQoInNvbWV0aGluZyB3ZW50IHdyb25nXG4iKSkNCiAgICAgDQogICAgIH0NCiAgZGFuY2Vyc30NCg0KYGBgDQoNCmBgYHtyfQ0KcGFydDE8LXN0cl9mbGF0dGVuKGNob3JlbygpKQ0KcGFydDENCmBgYA0KDQojIyBQYXJ0IDINCg0KT3B0aW9uIDEgLSBydW4gaXQgYSBiaWxsaW9uIHRpbWVzLg0KT3B0aW9uIDIgLSBmaWd1cmUgb3V0IGlmIGl0IHJlcGVhdHMuICBBbmQgb25seSBydW4gaXQgdGhhdCBtYW55IHRpbWVzLg0KDQpgYGB7cixldmFsPUZBTFNFfQ0Ka2lkZGluZ21lPC1sZXR0ZXJzWzE6MTZdDQpmb3IoaSBpbiAxOjEwMDAwMCl7DQpraWRkaW5nbWU8LWNob3JlbyhraWRkaW5nbWUsaW5wdXQpDQppZihhbGwoa2lkZGluZ21lWzE6Ml09PWxldHRlcnNbMToyXSkpe2NhdChpLGtpZGRpbmdtZSwiXG4iKX19DQpgYGANCkFzIGl0IHJlcGVhdHMgZXZlcnkgNjAgLQ0KYGBge3J9DQpraWRkaW5nbWU8LWxldHRlcnNbMToxNl0NCmZvcihpIGluIDE6KDEwMDAwMDAwMDAlJTYwKSl7DQpraWRkaW5nbWU8LWNob3JlbyhraWRkaW5nbWUsaW5wdXQpDQppZihhbGwoa2lkZGluZ21lWzE6Ml09PWxldHRlcnNbMToyXSkpe2NhdChpLGtpZGRpbmdtZSwiXG4iKX19DQpzdHJfZmxhdHRlbihraWRkaW5nbWUpDQpgYGANCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAxMyBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KYGBge3J9DQppbnB1dDwtcmVhZF9saW5lcygiRGF5MTNTYW1wbGUudHh0IikNCnNjYW5uZXJzPC1saXN0KCkNCiMjIyBjcmVhdGUgdGhlIHNjYW5uZXJzIGFzIGxpc3Qgb2YgdmVjdG9ycyBvZiBjKGRlcHRoLGxlbmd0aCkNCmZvcihpIGluIDE6bGVuZ3RoKGlucHV0KSl7DQogIHM8LWFzLm51bWVyaWModW5saXN0KHN0cl9zcGxpdCgoc3RyX3JlbW92ZV9hbGwoaW5wdXRbaV0sIjoiKSksIiAiKSkpDQogIHNjYW5uZXJzPC1jKHNjYW5uZXJzLGxpc3QocykpfQ0KYGBgDQojIyBQYXJ0IDENCkNyZWF0ZSBhIGZ1bmN0aW9uIHRvIHNheSB3aGV0aGVyIG9yIG5vdCB5b3Ugd2VyZSBjYXVnaHQNCg0KYGBge3J9DQpzZXZlcml0eW1lYXN1cmU8LWZ1bmN0aW9uKHN0YXJ0aW5nPTAsc2NucnM9c2Nhbm5lcnMpew0KIyMjIHNldCBzZXZlcml0eSB0byAwDQogICAgc2V2ZXJpdHk8LTANCiAgZm9yKGkgaW4gMTpsZW5ndGgoc2Nhbm5lcnMpKXsNCiAgICBzPC1zY2FubmVyc1tbaV1dDQogICAgIyMjIGVhY2ggc2Nhbm5lciBpcyBvbiBhIGN5Y2xlIG9mIDIqKHNjYW5uZXJsZW5ndGgtMSkNCiAgICAjIyMgYSBjb2xsaXNpb24gd2lsbCBoYXBwZW4gaWYgaXQgaXMgYXQgMCBvbiB0aGF0IGN5Y2xlIC0gb2Zmc2V0IG9mIGJ5IHdoZW4gdGhlIHN0YXJ0IGlzLg0KICAgIGlmKChzdGFydGluZytzWzFdKSUlKDIqKHNbMl0tMSkpPT0wKXsNCiAgICAgICMjIyBpZiB0aGVyZSdzIGEgY29sbGlzaW9uLCBhZGQgdGhlIHNldmVyaXR5IChkZXB0aCpsZW5ndGgpIHRvIHRoZSBzZXZlcml0eSBjb3VudGVyDQogICAgICBzZXZlcml0eTwtc2V2ZXJpdHkrcHJvZChzKX19DQogIHNldmVyaXR5fQ0KYGBgDQoNCmBgYHtyfQ0Kc2V2ZXJpdHltZWFzdXJlKDAsc2Nhbm5lcnMpDQpwYXJ0MTwtcGFydDENCmBgYA0KDQojIyBQYXJ0IDINClNvIC0gdGhlcmUncyB0aGUgcmlnaHQgd2F5IGFuZCB0aGVyZSdzIEJSVVRFIEZPUkNFISEgIA0KYGBge3J9DQpjYXRjaG1lPC1mdW5jdGlvbihzdGFydGluZz0wLHNjbnJzPXNjYW5uZXJzKXsNCiAgY2F1Z2h0PC1GQUxTRQ0KICBpPC0xDQogIHdoaWxlKGk8PWxlbmd0aChzY2FubmVycykmJiFjYXVnaHQpew0KICAgICMjIyBpZiB0aGVyZSdzIGEgY29sbGlzaW9uLCBtYXJrIGFzIFRSVUUuICBTdG9wDQogICAgczwtc2Nhbm5lcnNbW2ldXQ0KICAgIGlmKChzdGFydGluZytzWzFdKSUlKDIqKHNbMl0tMSkpPT0wKXsNCiAgICAgIGNhdWdodDwtVFJVRQ0KICAgICAgYnJlYWt9DQogICAgaTwtaSsxfQ0KY2F1Z2h0fQ0KYGBgDQoNCg0KDQpgYGB7cn0NCmk8LTANCmtlZXBnb2luZzwtVFJVRQ0Kd2hpbGUoa2VlcGdvaW5nKXsNCiAgIyMjIHN0YXJ0IGF0IHRpbWU9MSAmIGtlZXAgZ29pbmcgdW50aWwgY2F1Z2h0IGlzIEZBTFNFDQogIHg8LWNhdGNobWUoaSxzY2FubmVycykNCiAgaWYoIXgpe2tlZXBnb2luZz1GQUxTRQ0KICB9ZWxzZXsNCiAgICBpPC1pKzF9fQ0KcGFydDI8LWkNCnBhcnQyDQpgYGANCg==</div>
 
 
 
@@ -1893,7 +1887,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Day16.Rmd");
+  window.initializeSourceEmbed("Day13.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>

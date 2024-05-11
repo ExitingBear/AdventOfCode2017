@@ -1756,10 +1756,8 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2lucHV0PC1yZWFkX2xpbmVzKFwiRGF5MTZTYW1wbGUudHh0XCIpXG5pbnB1dDwtcmVhZF9saW5lcyhcIi4uLy4uL0FvQ0RhdGEvQU9DMjAxNy9EYXkxNi50eHRcIilcblxuYGBgIn0= -->
-<pre class="r"><code>#input&lt;-read_lines(&quot;Day16Sample.txt&quot;)
-input&lt;-read_lines(&quot;../../AoCData/AOC2017/Day16.txt&quot;)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiaW5wdXQ8LXJlYWRfbGluZXMoXCIuLi8uLi9Bb0NEYXRhL0FPQzIwMTcvRGF5MTYudHh0XCIpIn0= -->
+<pre class="r"><code>input&lt;-read_lines(&quot;../../AoCData/AOC2017/Day16.txt&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1768,22 +1766,25 @@ input&lt;-read_lines(&quot;../../AoCData/AOC2017/Day16.txt&quot;)
 <p>Dance you programs, dance!!!</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2hvcmVvPC1mdW5jdGlvbihkYW5jZXJzPWxldHRlcnNbMToxNl0sZGFuY2Vtb3Zlcz1pbnB1dCl7XG4gIGRhbmNlbW92ZXM8LXVubGlzdChzdHJfc3BsaXQoZGFuY2Vtb3ZlcyxcIixcIikpXG4gICBmb3IoaSBpbiAxOmxlbmd0aChkYW5jZW1vdmVzKSl7XG4gICAgICMjIHNwbGl0IGludG8gcGllY2VzXG4gICAgIGRtPC1jKHN0cl9zdWIoZGFuY2Vtb3Zlc1tpXSwxLDEpLHVubGlzdChzdHJfc3BsaXQoc3RyX3N1YihkYW5jZW1vdmVzW2ldLDIpLFwiL1wiKSkpXG4gICAgc3dpdGNoKGRtWzFdLFxuICAgICAgICAgICBcInNcIj17XG4gICAgICAgICAgICAgWDwtYXMubnVtZXJpYyhkbVsyXSlcbiAgICAgICAgICAgICBkYW5jZXJzPC1jKGRhbmNlcnNbKGxlbmd0aChkYW5jZXJzKS1YKzEpOmxlbmd0aChkYW5jZXJzKV0sZGFuY2Vyc1sxOihsZW5ndGgoZGFuY2VycyktWCldKX0sXG4gICAgICAgICAgIFwieFwiPXtcbiAgICAgICAgICAgICBBPC1hcy5udW1lcmljKGRtWzJdKSsxXG4gICAgICAgICAgICAgQjwtYXMubnVtZXJpYyhkbVszXSkrMVxuICAgICAgICAgICAgIHBoPC1kYW5jZXJzW0FdXG4gICAgICAgICAgICAgZGFuY2Vyc1tBXTwtZGFuY2Vyc1tCXVxuICAgICAgICAgICAgIGRhbmNlcnNbQl08LXBofSxcbiAgICAgICAgICAgXCJwXCI9e1xuICAgICAgICAgICAgIEE8LXdoaWNoKGRhbmNlcnM9PWRtWzJdKVxuICAgICAgICAgICAgIEI8LXdoaWNoKGRhbmNlcnM9PWRtWzNdKVxuICAgICAgICAgICAgIGRhbmNlcnNbQV08LWRtWzNdXG4gICAgICAgICAgICAgZGFuY2Vyc1tCXTwtZG1bMl19LFxuICAgICAgICAgICBjYXQoXCJzb21ldGhpbmcgd2VudCB3cm9uZ1xcblwiKSlcbiAgICAgXG4gICAgIH1cbiAgZGFuY2Vyc31cblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiY2hvcmVvPC1mdW5jdGlvbihkYW5jZXJzPWxldHRlcnNbMToxNl0sZGFuY2Vtb3Zlcz1pbnB1dCl7XG4gIGRhbmNlbW92ZXM8LXVubGlzdChzdHJfc3BsaXQoZGFuY2Vtb3ZlcyxcIixcIikpXG4gICBmb3IoaSBpbiAxOmxlbmd0aChkYW5jZW1vdmVzKSl7XG4gICAgICMjIHNwbGl0IGludG8gcGllY2VzXG4gICAgIGRtPC1jKHN0cl9zdWIoZGFuY2Vtb3Zlc1tpXSwxLDEpLHVubGlzdChzdHJfc3BsaXQoc3RyX3N1YihkYW5jZW1vdmVzW2ldLDIpLFwiL1wiKSkpXG4gICAgc3dpdGNoKGRtWzFdLFxuICAgICAgICAgICAjI3Jlb3JkZXJzIHRoZSB2ZWN0b3JcbiAgICAgICAgICAgXCJzXCI9e1xuICAgICAgICAgICAgIFg8LWFzLm51bWVyaWMoZG1bMl0pXG4gICAgICAgICAgICAgZGFuY2VyczwtYyhkYW5jZXJzWyhsZW5ndGgoZGFuY2VycyktWCsxKTpsZW5ndGgoZGFuY2VycyldLGRhbmNlcnNbMToobGVuZ3RoKGRhbmNlcnMpLVgpXSl9LFxuICAgICAgICAgICAjIyBxdWlja2x5IHVzZXMgYSBwbGFjZWhvbGRlciB0byBtb3ZlIHRoaW5ncyBhcm91bmRcbiAgICAgICAgICAgXCJ4XCI9e1xuICAgICAgICAgICAgIEE8LWFzLm51bWVyaWMoZG1bMl0pKzFcbiAgICAgICAgICAgICBCPC1hcy5udW1lcmljKGRtWzNdKSsxXG4gICAgICAgICAgICAgcGg8LWRhbmNlcnNbQV1cbiAgICAgICAgICAgICBkYW5jZXJzW0FdPC1kYW5jZXJzW0JdXG4gICAgICAgICAgICAgZGFuY2Vyc1tCXTwtcGh9LFxuICAgICAgICAgICAjIyBzd2l0Y2hlcyB0d28gZGFuY2Vyc1xuICAgICAgICAgICBcInBcIj17XG4gICAgICAgICAgICAgQTwtd2hpY2goZGFuY2Vycz09ZG1bMl0pXG4gICAgICAgICAgICAgQjwtd2hpY2goZGFuY2Vycz09ZG1bM10pXG4gICAgICAgICAgICAgZGFuY2Vyc1tBXTwtZG1bM11cbiAgICAgICAgICAgICBkYW5jZXJzW0JdPC1kbVsyXX0sXG4gICAgICAgICAgIGNhdChcInNvbWV0aGluZyB3ZW50IHdyb25nXFxuXCIpKVxuICAgICBcbiAgICAgfVxuICBkYW5jZXJzfSJ9 -->
 <pre class="r"><code>choreo&lt;-function(dancers=letters[1:16],dancemoves=input){
   dancemoves&lt;-unlist(str_split(dancemoves,&quot;,&quot;))
    for(i in 1:length(dancemoves)){
      ## split into pieces
      dm&lt;-c(str_sub(dancemoves[i],1,1),unlist(str_split(str_sub(dancemoves[i],2),&quot;/&quot;)))
     switch(dm[1],
+           ##reorders the vector
            &quot;s&quot;={
              X&lt;-as.numeric(dm[2])
              dancers&lt;-c(dancers[(length(dancers)-X+1):length(dancers)],dancers[1:(length(dancers)-X)])},
+           ## quickly uses a placeholder to move things around
            &quot;x&quot;={
              A&lt;-as.numeric(dm[2])+1
              B&lt;-as.numeric(dm[3])+1
              ph&lt;-dancers[A]
              dancers[A]&lt;-dancers[B]
              dancers[B]&lt;-ph},
+           ## switches two dancers
            &quot;p&quot;={
              A&lt;-which(dancers==dm[2])
              B&lt;-which(dancers==dm[3])
@@ -1792,24 +1793,21 @@ input&lt;-read_lines(&quot;../../AoCData/AOC2017/Day16.txt&quot;)
            cat(&quot;something went wrong\n&quot;))
      
      }
-  dancers}
-</code></pre>
+  dancers}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDE8LWNob3JlbygpXG5gYGAifQ== -->
-<pre class="r"><code>part1&lt;-choreo()</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiMTAwMDAgXG4ifQ== -->
-<pre><code>10000 </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDFcbmBgYCJ9 -->
-<pre class="r"><code>part1</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbInBhcnQxPC1zdHJfZmxhdHRlbihjaG9yZW8oKSkiLCJwYXJ0MSJdfQ== -->
+<pre class="r"><code>part1&lt;-str_flatten(choreo())
+part1</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwibmFtZGdrYmhpZnBjZWxvalwiXG4ifQ== -->
 <pre><code>[1] &quot;namdgkbhifpceloj&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoibmFtZGdrYmhpZnBjZWxvalxuIn0= -->
+<pre><code>namdgkbhifpceloj</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1831,7 +1829,7 @@ if(all(kiddingme[1:2]==letters[1:2])){cat(i,kiddingme,&quot;\n&quot;)}}</code></
 <p>As it repeats every 60 -</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua2lkZGluZ21lPC1sZXR0ZXJzWzE6MTZdXG5mb3IoaSBpbiAxOigxMDAwMDAwMDAwJSU2MCkpe1xua2lkZGluZ21lPC1jaG9yZW8oa2lkZGluZ21lLGlucHV0KVxuaWYoYWxsKGtpZGRpbmdtZVsxOjJdPT1sZXR0ZXJzWzE6Ml0pKXtjYXQoaSxraWRkaW5nbWUsXCJcXG5cIil9fVxuc3RyX2ZsYXR0ZW4oa2lkZGluZ21lKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbImtpZGRpbmdtZTwtbGV0dGVyc1sxOjE2XSIsImZvcihpIGluIDE6KDEwMDAwMDAwMDAlJTYwKSl7XG5raWRkaW5nbWU8LWNob3JlbyhraWRkaW5nbWUsaW5wdXQpXG5pZihhbGwoa2lkZGluZ21lWzE6Ml09PWxldHRlcnNbMToyXSkpe2NhdChpLGtpZGRpbmdtZSxcIlxcblwiKX19Iiwic3RyX2ZsYXR0ZW4oa2lkZGluZ21lKSJdfQ== -->
 <pre class="r"><code>kiddingme&lt;-letters[1:16]
 for(i in 1:(1000000000%%60)){
 kiddingme&lt;-choreo(kiddingme,input)
@@ -1840,6 +1838,9 @@ str_flatten(kiddingme)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiaWJtY2hrbG5vZmpwZGVhZ1wiXG4ifQ== -->
 <pre><code>[1] &quot;ibmchklnofjpdeag&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaWJtY2hrbG5vZmpwZGVhZ1xuIn0= -->
+<pre><code>ibmchklnofjpdeag</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->

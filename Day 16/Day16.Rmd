@@ -62,7 +62,7 @@ part1
 Option 1 - run it a billion times.
 Option 2 - figure out if it repeats.  And only run it that many times.
 
-```{r}
+```{r,eval=FALSE}
 kiddingme<-letters[1:16]
 for(i in 1:100000){
 kiddingme<-choreo(kiddingme,input)
