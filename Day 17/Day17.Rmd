@@ -1,13 +1,9 @@
 ---
-title: "Day XX Notebook"
+title: "Day 17 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
 library(stringr)
@@ -17,32 +13,70 @@ library(collections)
 options(scipen = 999)
 ```
 
-```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
 
+## Part 1
+Create the function to simulate the spinlock
+```{r}
+spinlocker<-function(x,n){
+  ###placeholder
+  ph<-1
+  ###loop
+  lp<-c(0)
+  ###counter
+  i<-1
+  ### while there are still steps left then
+  while(i<=n){
+    ##move forward 3 steps
+    ph<-ph+x
+    ##wrap around if needed
+    while(ph>length(lp)){ph<-ph-length(lp)}
+    ### if at the edge, stick the counter at the end
+    if(ph==length(lp)){lp<-c(lp,i)
+    }else{
+      ### otherwise, put the counter in the next slot
+      lp<-c(lp[1:ph],i,lp[(ph+1):length(lp)])}
+    ### move forward one
+    ph<-ph+1
+    ### update the counter
+    i<-i+1}
+lp}
 ```
 
 ```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
+p1<-spinlocker(3,2017)
+part1<-p1[which(p1==2017)+1]
+part1
+```
+## Part 2
 
+Because 0 is always the first thing in the loop, it isn't really necessary to make the rest of the loop, just to keep track of when the space after 0 changes (and what it changes to)
+
+```{r}
+longspinlocker<-function(x,n){
+  ###placeholder
+  ph<-1
+  ###loop
+  #lp<-c(0)
+  ###counter
+  i<-1
+  place2<-NA
+  ### while there are still steps left then
+  while(i<=n){
+    ##move forward 3 steps
+    ph<-ph+x
+    ##wrap around if needed
+    while(ph>i){ph<-ph-i}
+    ## if behind place 
+    if(ph==1){place2<-i}
+    ## move forward one space
+    ph<-ph+1
+    ### update the counter
+    i<-i+1}
+place2}
 ```
 
-
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+```{r}
+part2<-longspinlocker(3,50000000)
+part2
 ```
 

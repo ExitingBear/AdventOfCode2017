@@ -1,13 +1,9 @@
 ---
-title: "Day XX Notebook"
+title: "Day 16 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
 library(stringr)
@@ -18,31 +14,66 @@ options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+input<-read_lines("../../AoCData/AOC2017/Day16.txt")
+
+```
+
+## Part 1
+
+Dance you programs, dance!!!
+```{r}
+choreo<-function(dancers=letters[1:16],dancemoves=input){
+  dancemoves<-unlist(str_split(dancemoves,","))
+   for(i in 1:length(dancemoves)){
+     ## split into pieces
+     dm<-c(str_sub(dancemoves[i],1,1),unlist(str_split(str_sub(dancemoves[i],2),"/")))
+    switch(dm[1],
+           ##reorders the vector
+           "s"={
+             X<-as.numeric(dm[2])
+             dancers<-c(dancers[(length(dancers)-X+1):length(dancers)],dancers[1:(length(dancers)-X)])},
+           ## quickly uses a placeholder to move things around
+           "x"={
+             A<-as.numeric(dm[2])+1
+             B<-as.numeric(dm[3])+1
+             ph<-dancers[A]
+             dancers[A]<-dancers[B]
+             dancers[B]<-ph},
+           ## switches two dancers
+           "p"={
+             A<-which(dancers==dm[2])
+             B<-which(dancers==dm[3])
+             dancers[A]<-dm[3]
+             dancers[B]<-dm[2]},
+           cat("something went wrong\n"))
+     
+     }
+  dancers}
 
 ```
 
 ```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
-
+part1<-str_flatten(choreo())
+part1
 ```
 
+## Part 2
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+Option 1 - run it a billion times.
+Option 2 - figure out if it repeats.  And only run it that many times.
+
+```{r}
+kiddingme<-letters[1:16]
+for(i in 1:100000){
+kiddingme<-choreo(kiddingme,input)
+if(all(kiddingme[1:2]==letters[1:2])){cat(i,kiddingme,"\n")}}
+```
+As it repeats every 60 -
+```{r}
+kiddingme<-letters[1:16]
+for(i in 1:(1000000000%%60)){
+kiddingme<-choreo(kiddingme,input)
+if(all(kiddingme[1:2]==letters[1:2])){cat(i,kiddingme,"\n")}}
+str_flatten(kiddingme)
 ```
 
