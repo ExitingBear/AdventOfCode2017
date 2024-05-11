@@ -11,7 +11,7 @@
 
 
 
-<title>Day 16 Notebook</title>
+<title>Day 10 Notebook</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1746,7 +1746,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Day 16 Notebook</h1>
+<h1 class="title toc-ignore">Day 10 Notebook</h1>
 
 </div>
 
@@ -1756,97 +1756,144 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2lucHV0PC1yZWFkX2xpbmVzKFwiRGF5MTZTYW1wbGUudHh0XCIpXG5pbnB1dDwtcmVhZF9saW5lcyhcIi4uLy4uL0FvQ0RhdGEvQU9DMjAxNy9EYXkxNi50eHRcIilcblxuYGBgIn0= -->
-<pre class="r"><code>#input&lt;-read_lines(&quot;Day16Sample.txt&quot;)
-input&lt;-read_lines(&quot;../../AoCData/AOC2017/Day16.txt&quot;)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbImlucHV0PC1jKDMsIDQsIDEsIDUpIiwidHdpc3RoZXJlPC1hcy5udW1lcmljKHVubGlzdChzdHJfc3BsaXQoaW5wdXQsXCIsXCIpKSkiXX0= -->
+<pre class="r"><code>input&lt;-c(3, 4, 1, 5)
+twisthere&lt;-as.numeric(unlist(str_split(input,&quot;,&quot;)))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="part-1" class="section level2">
 <h2>Part 1</h2>
-<p>Dance you programs, dance!!!</p>
+<p>So, need a function that takes in the list of lengths &amp; the list
+of numbers</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2hvcmVvPC1mdW5jdGlvbihkYW5jZXJzPWxldHRlcnNbMToxNl0sZGFuY2Vtb3Zlcz1pbnB1dCl7XG4gIGRhbmNlbW92ZXM8LXVubGlzdChzdHJfc3BsaXQoZGFuY2Vtb3ZlcyxcIixcIikpXG4gICBmb3IoaSBpbiAxOmxlbmd0aChkYW5jZW1vdmVzKSl7XG4gICAgICMjIHNwbGl0IGludG8gcGllY2VzXG4gICAgIGRtPC1jKHN0cl9zdWIoZGFuY2Vtb3Zlc1tpXSwxLDEpLHVubGlzdChzdHJfc3BsaXQoc3RyX3N1YihkYW5jZW1vdmVzW2ldLDIpLFwiL1wiKSkpXG4gICAgc3dpdGNoKGRtWzFdLFxuICAgICAgICAgICBcInNcIj17XG4gICAgICAgICAgICAgWDwtYXMubnVtZXJpYyhkbVsyXSlcbiAgICAgICAgICAgICBkYW5jZXJzPC1jKGRhbmNlcnNbKGxlbmd0aChkYW5jZXJzKS1YKzEpOmxlbmd0aChkYW5jZXJzKV0sZGFuY2Vyc1sxOihsZW5ndGgoZGFuY2VycyktWCldKX0sXG4gICAgICAgICAgIFwieFwiPXtcbiAgICAgICAgICAgICBBPC1hcy5udW1lcmljKGRtWzJdKSsxXG4gICAgICAgICAgICAgQjwtYXMubnVtZXJpYyhkbVszXSkrMVxuICAgICAgICAgICAgIHBoPC1kYW5jZXJzW0FdXG4gICAgICAgICAgICAgZGFuY2Vyc1tBXTwtZGFuY2Vyc1tCXVxuICAgICAgICAgICAgIGRhbmNlcnNbQl08LXBofSxcbiAgICAgICAgICAgXCJwXCI9e1xuICAgICAgICAgICAgIEE8LXdoaWNoKGRhbmNlcnM9PWRtWzJdKVxuICAgICAgICAgICAgIEI8LXdoaWNoKGRhbmNlcnM9PWRtWzNdKVxuICAgICAgICAgICAgIGRhbmNlcnNbQV08LWRtWzNdXG4gICAgICAgICAgICAgZGFuY2Vyc1tCXTwtZG1bMl19LFxuICAgICAgICAgICBjYXQoXCJzb21ldGhpbmcgd2VudCB3cm9uZ1xcblwiKSlcbiAgICAgXG4gICAgIH1cbiAgZGFuY2Vyc31cblxuYGBgIn0= -->
-<pre class="r"><code>choreo&lt;-function(dancers=letters[1:16],dancemoves=input){
-  dancemoves&lt;-unlist(str_split(dancemoves,&quot;,&quot;))
-   for(i in 1:length(dancemoves)){
-     ## split into pieces
-     dm&lt;-c(str_sub(dancemoves[i],1,1),unlist(str_split(str_sub(dancemoves[i],2),&quot;/&quot;)))
-    switch(dm[1],
-           &quot;s&quot;={
-             X&lt;-as.numeric(dm[2])
-             dancers&lt;-c(dancers[(length(dancers)-X+1):length(dancers)],dancers[1:(length(dancers)-X)])},
-           &quot;x&quot;={
-             A&lt;-as.numeric(dm[2])+1
-             B&lt;-as.numeric(dm[3])+1
-             ph&lt;-dancers[A]
-             dancers[A]&lt;-dancers[B]
-             dancers[B]&lt;-ph},
-           &quot;p&quot;={
-             A&lt;-which(dancers==dm[2])
-             B&lt;-which(dancers==dm[3])
-             dancers[A]&lt;-dm[3]
-             dancers[B]&lt;-dm[2]},
-           cat(&quot;something went wrong\n&quot;))
-     
-     }
-  dancers}
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoidHdpc3RtZTwtZnVuY3Rpb24odHdpc3RzPWlucHV0LGNpcmNsZT0wOjQscmVwcyl7XG4gICMjIyBzZXQgdGhlIHNraXAgbGVuZ3RoIHRvIDBcbiAgc2twPC0wXG4gIG5vdzwtMVxuICAjIyMgcmVwZWF0cyBhZGRlZCBmb3IgcGFydCAyXG4gIGZvcihqIGluIDE6cmVwcyl7XG4gIGZvcihpIGluIDE6bGVuZ3RoKHR3aXN0cykpe1xuICAgIHR3PC10d2lzdHNbaV1cbiAgICAjIyMgaWYgaXQgZG9lc24ndCBuZWVkIHRvIHdyYXAgYXJvdW5kXG4gICAgaWYodHcrbm93LTE8PWxlbmd0aChjaXJjbGUpKXtcbiAgICAgIGNpcmNsZVtub3c6KG5vdyt0dy0xKV08LXJldihjaXJjbGVbbm93Oihub3crdHctMSldKVxuICAgIH1lbHNle1xuICAgICAgIyMjIGdldCB0aGUgdmVjdG9yIHRvIHJldmVyc2UgKHRoZSBlbmQgb2YgdGhpcyBvbmUsIHRoZSBmaXJzdCBwYXJ0IG9mIHRoZSBuZXh0KVxuICAgICAgc3c8LWMoY2lyY2xlW25vdzpsZW5ndGgoY2lyY2xlKV0sY2lyY2xlWzE6KG5vdyt0dy0xLWxlbmd0aChjaXJjbGUpKV0pXG4gICAgICAjIyMgcmV2ZXJzZSBpdFxuICAgICAgc3c8LXJldihzdylcbiAgICAgICMjIyBwYXN0ZSBpdCBpblxuICAgICAgY2lyY2xlW25vdzpsZW5ndGgoY2lyY2xlKV08LXN3WzE6KGxlbmd0aChjaXJjbGUpLW5vdysxKV1cbiAgICAgIGNpcmNsZVsxOihub3crdHctMS1sZW5ndGgoY2lyY2xlKSldPC1zd1sobGVuZ3RoKGNpcmNsZSktbm93KzIpOmxlbmd0aChzdyldfVxuICAgIG5vdzwtbm93K3R3K3NrcFxuICAgIHdoaWxlKG5vdz5sZW5ndGgoY2lyY2xlKSl7bm93PC1ub3ctbGVuZ3RoKGNpcmNsZSl9XG4gICAgc2twPC1za3ArMX19XG5jaXJjbGV9In0= -->
+<pre class="r"><code>twistme&lt;-function(twists=input,circle=0:4,reps){
+  ### set the skip length to 0
+  skp&lt;-0
+  now&lt;-1
+  ### repeats added for part 2
+  for(j in 1:reps){
+  for(i in 1:length(twists)){
+    tw&lt;-twists[i]
+    ### if it doesn&#39;t need to wrap around
+    if(tw+now-1&lt;=length(circle)){
+      circle[now:(now+tw-1)]&lt;-rev(circle[now:(now+tw-1)])
+    }else{
+      ### get the vector to reverse (the end of this one, the first part of the next)
+      sw&lt;-c(circle[now:length(circle)],circle[1:(now+tw-1-length(circle))])
+      ### reverse it
+      sw&lt;-rev(sw)
+      ### paste it in
+      circle[now:length(circle)]&lt;-sw[1:(length(circle)-now+1)]
+      circle[1:(now+tw-1-length(circle))]&lt;-sw[(length(circle)-now+2):length(sw)]}
+    now&lt;-now+tw+skp
+    while(now&gt;length(circle)){now&lt;-now-length(circle)}
+    skp&lt;-skp+1}}
+circle}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDE8LWNob3JlbygpXG5gYGAifQ== -->
-<pre class="r"><code>part1&lt;-choreo()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbInAxPC10d2lzdG1lKHR3aXN0aGVyZSwwOjI1NSwxKSIsInBhcnQxPC1wcm9kKHAxWzE6Ml0pIiwicGFydDEiXX0= -->
+<pre class="r"><code>p1&lt;-twistme(twisthere,0:255,1)
+part1&lt;-prod(p1[1:2])
+part1</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiMTAwMDAgXG4ifQ== -->
-<pre><code>10000 </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDFcbmBgYCJ9 -->
-<pre class="r"><code>part1</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwibmFtZGdrYmhpZnBjZWxvalwiXG4ifQ== -->
-<pre><code>[1] &quot;namdgkbhifpceloj&quot;</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDJcbiJ9 -->
+<pre><code>[1] 2</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-<div id="part-2" class="section level2">
-<h2>Part 2</h2>
-<p>Option 1 - run it a billion times. Option 2 - figure out if it
-repeats. And only run it that many times.</p>
+<p>##Part 2</p>
+<p>First - small change in the “twistme()” function to do multiple
+repeats Second - convert the input string</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbImtpZGRpbmdtZTwtbGV0dGVyc1sxOjE2XSIsImZvcihpIGluIDE6MTAwMDAwKXsiLCJraWRkaW5nbWU8LWNob3JlbyhraWRkaW5nbWUsaW5wdXQpIiwiaWYoYWxsKGtpZGRpbmdtZVsxOjJdPT1sZXR0ZXJzWzE6Ml0pKXtjYXQoaSxraWRkaW5nbWUsXCJcXG5cIil9fSJdfQ== -->
-<pre class="r"><code>kiddingme&lt;-letters[1:16]
-for(i in 1:100000){
-kiddingme&lt;-choreo(kiddingme,input)
-if(all(kiddingme[1:2]==letters[1:2])){cat(i,kiddingme,&quot;\n&quot;)}}</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbIiMjIyB0aGlzIGlzIGp1c3QgdG8gc2hvdyB3aGF0IGNvbnZlcnNpb24gaXMgc3VwcG9zZWQgdG8gZG8iLCJ0d2lzdHR3bzwtYyhzYXBwbHkodW5saXN0KHN0cl9zcGxpdChpbnB1dCxcIlwiKSksdXRmOFRvSW50KSxjKDE3LDMxLDczLDQ3LDIzKSkiXX0= -->
+<pre class="r"><code>### this is just to show what conversion is supposed to do
+twisttwo&lt;-c(sapply(unlist(str_split(input,&quot;&quot;)),utf8ToInt),c(17,31,73,47,23))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>As it repeats every 60 -</p>
+<p>Third - create a very specific xor that works on 16 decimals to
+change them into another decimal.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua2lkZGluZ21lPC1sZXR0ZXJzWzE6MTZdXG5mb3IoaSBpbiAxOigxMDAwMDAwMDAwJSU2MCkpe1xua2lkZGluZ21lPC1jaG9yZW8oa2lkZGluZ21lLGlucHV0KVxuaWYoYWxsKGtpZGRpbmdtZVsxOjJdPT1sZXR0ZXJzWzE6Ml0pKXtjYXQoaSxraWRkaW5nbWUsXCJcXG5cIil9fVxuc3RyX2ZsYXR0ZW4oa2lkZGluZ21lKVxuYGBgIn0= -->
-<pre class="r"><code>kiddingme&lt;-letters[1:16]
-for(i in 1:(1000000000%%60)){
-kiddingme&lt;-choreo(kiddingme,input)
-if(all(kiddingme[1:2]==letters[1:2])){cat(i,kiddingme,&quot;\n&quot;)}}
-str_flatten(kiddingme)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoieG9yZGVjPC1mdW5jdGlvbihuLG0pe1xuICBhbnN3ZXI8LTBcbiAgZm9yKGkgaW4gMTU6MCl7XG4gICAgIyMjIGNvbnZlcnRzIGxlZnQgdG8gcmlnaHQgYnkgZmlndXJpbmcgb3V0IGlmIGl0IGhhcyB0aGF0IHBvd2VyIG9mIDIsIHRoZW4gbW92aW5nIGRvd24uXG4gICAgYW5zd2VyPC1hbnN3ZXIreG9yKChuJS8lKDJeaSkpLChtJS8lKDJeaSkpKSoyXmlcbiAgICBuPC1uJSUyXmlcbiAgICBtPC1tJSUyXml9XG4gIGFuc3dlcn0ifQ== -->
+<pre class="r"><code>xordec&lt;-function(n,m){
+  answer&lt;-0
+  for(i in 15:0){
+    ### converts left to right by figuring out if it has that power of 2, then moving down.
+    answer&lt;-answer+xor((n%/%(2^i)),(m%/%(2^i)))*2^i
+    n&lt;-n%%2^i
+    m&lt;-m%%2^i}
+  answer}</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiaWJtY2hrbG5vZmpwZGVhZ1wiXG4ifQ== -->
-<pre><code>[1] &quot;ibmchklnofjpdeag&quot;</code></pre>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Next - create a function that takes a sparse hash and makes it
+dense</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMjIyBUaGlzIE9OTFkgd29ya3Mgd2VsbCBpZiB0aGVyZSBhcmUgYSBtdWx0aXBsZSAxNiBjaGFyYWN0ZXJzLiBPTkxZIiwiZGVuc2VoYXNoPC1mdW5jdGlvbihzcGhzaCl7XG4gIGRoPC1jKClcbiAgd2hpbGUobGVuZ3RoKHNwaHNoKT4wKXtcbiAgICBjbHVtcDwtc3Boc2hbMV1cbiAgICAjIyBzdGFydCB4b3JpbmcgdGhlIGZpcnN0IG51bWJlcnMgZnJvbSAxLTE1XG4gICAgZm9yKGkgaW4gMjoxNil7XG4gICAgICBjbHVtcDwteG9yZGVjKGNsdW1wLHNwaHNoW2ldKX1cbiAgICAjIyByZW1vdmUgdGhvc2UgbnVtYmVycyBmcm9tIHRoZSBsaXN0XG4gICAgc3Boc2g8LXNwaHNoWy0oMToxNildXG4gICAgIyMgYWRkIHRoYXQgdG8gdGhlIG91dHB1XG4gICAgZGg8LWMoZGgsY2x1bXApfVxuZGh9Il19 -->
+<pre class="r"><code>### This ONLY works well if there are a multiple 16 characters. ONLY
+densehash&lt;-function(sphsh){
+  dh&lt;-c()
+  while(length(sphsh)&gt;0){
+    clump&lt;-sphsh[1]
+    ## start xoring the first numbers from 1-15
+    for(i in 2:16){
+      clump&lt;-xordec(clump,sphsh[i])}
+    ## remove those numbers from the list
+    sphsh&lt;-sphsh[-(1:16)]
+    ## add that to the outpu
+    dh&lt;-c(dh,clump)}
+dh}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>penultimately - convert a dense hash into a knot hash</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoia25vdGhhc2g8LWZ1bmN0aW9uKGRoKXtcbiAga2g8LShzYXBwbHkoZGgsZnVuY3Rpb24oeCl7XG4gICAgIyMgY2hhbmdlIGVhY2ggbnVtYmVyIHRvIGhleG1vZGUgYW5kIHRoZW4gdG8gYSBjaGFyYWN0ZXJcbiAgICB4PC1hcy5jaGFyYWN0ZXIoYXMuaGV4bW9kZSh4KSlcbiAgICAjIyBpZiBpdCBpcyA8PTE1LCBtYWtlIHN1cmUgdGhhdCB0aGVyZSBhcmUgdHdvIGRpZ2l0cyAtIGFkZCBhIDAgYXQgdGhlIGZyb250XG4gICAgaWYobmNoYXIoeCk9PTEpe3g8LXN0cl9jKFwiMFwiLHgpfWVsc2V7eH1cbiAgICB4fSkpXG4gICMjc211c2ggZXZlcnl0aGluZyB0b2dldGhlclxuICBraDwtc3RyX2ZsYXR0ZW4oa2gpXG5raH0ifQ== -->
+<pre class="r"><code>knothash&lt;-function(dh){
+  kh&lt;-(sapply(dh,function(x){
+    ## change each number to hexmode and then to a character
+    x&lt;-as.character(as.hexmode(x))
+    ## if it is &lt;=15, make sure that there are two digits - add a 0 at the front
+    if(nchar(x)==1){x&lt;-str_c(&quot;0&quot;,x)}else{x}
+    x}))
+  ##smush everything together
+  kh&lt;-str_flatten(kh)
+kh}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Then to run it all at once:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMjIyBSZW1lbWJlciwgdGhlIGlucHV0IGlzIGEgc3RyaW5nIiwiaW5wdXQ8LShcIjEsMiwzXCIpIiwicmV2aXNlbGVuZ3RoPC11bmxpc3QoYyhzYXBwbHkodW5saXN0KHN0cl9zcGxpdChpbnB1dCxcIlwiKSksdXRmOFRvSW50KSxjKDE3LDMxLDczLDQ3LDIzKSkpIiwic3BhcnNlaGFzaDwtdHdpc3RtZShyZXZpc2VsZW5ndGgsMDoyNTUsNjQpIiwiZGg8LWRlbnNlaGFzaChzcGFyc2VoYXNoKSIsInBhcnQyPC1rbm90aGFzaChkaCkiLCJwYXJ0MiJdfQ== -->
+<pre class="r"><code>### Remember, the input is a string
+input&lt;-(&quot;1,2,3&quot;)
+reviselength&lt;-unlist(c(sapply(unlist(str_split(input,&quot;&quot;)),utf8ToInt),c(17,31,73,47,23)))
+sparsehash&lt;-twistme(reviselength,0:255,64)
+dh&lt;-densehash(sparsehash)
+part2&lt;-knothash(dh)
+part2</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiM2VmYmU3OGE4ZDgyZjI5OTc5MDMxYTRhYTBiMTZhOWRcIlxuIn0= -->
+<pre><code>[1] &quot;3efbe78a8d82f29979031a4aa0b16a9d&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiM2VmYmU3OGE4ZDgyZjI5OTc5MDMxYTRhYTBiMTZhOWRcbiJ9 -->
+<pre><code>3efbe78a8d82f29979031a4aa0b16a9d</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAxNiBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KYGBge3J9DQppbnB1dDwtcmVhZF9saW5lcygiLi4vLi4vQW9DRGF0YS9BT0MyMDE3L0RheTE2LnR4dCIpDQoNCmBgYA0KDQojIyBQYXJ0IDENCg0KRGFuY2UgeW91IHByb2dyYW1zLCBkYW5jZSEhIQ0KYGBge3J9DQpjaG9yZW88LWZ1bmN0aW9uKGRhbmNlcnM9bGV0dGVyc1sxOjE2XSxkYW5jZW1vdmVzPWlucHV0KXsNCiAgZGFuY2Vtb3ZlczwtdW5saXN0KHN0cl9zcGxpdChkYW5jZW1vdmVzLCIsIikpDQogICBmb3IoaSBpbiAxOmxlbmd0aChkYW5jZW1vdmVzKSl7DQogICAgICMjIHNwbGl0IGludG8gcGllY2VzDQogICAgIGRtPC1jKHN0cl9zdWIoZGFuY2Vtb3Zlc1tpXSwxLDEpLHVubGlzdChzdHJfc3BsaXQoc3RyX3N1YihkYW5jZW1vdmVzW2ldLDIpLCIvIikpKQ0KICAgIHN3aXRjaChkbVsxXSwNCiAgICAgICAgICAgIyNyZW9yZGVycyB0aGUgdmVjdG9yDQogICAgICAgICAgICJzIj17DQogICAgICAgICAgICAgWDwtYXMubnVtZXJpYyhkbVsyXSkNCiAgICAgICAgICAgICBkYW5jZXJzPC1jKGRhbmNlcnNbKGxlbmd0aChkYW5jZXJzKS1YKzEpOmxlbmd0aChkYW5jZXJzKV0sZGFuY2Vyc1sxOihsZW5ndGgoZGFuY2VycyktWCldKX0sDQogICAgICAgICAgICMjIHF1aWNrbHkgdXNlcyBhIHBsYWNlaG9sZGVyIHRvIG1vdmUgdGhpbmdzIGFyb3VuZA0KICAgICAgICAgICAieCI9ew0KICAgICAgICAgICAgIEE8LWFzLm51bWVyaWMoZG1bMl0pKzENCiAgICAgICAgICAgICBCPC1hcy5udW1lcmljKGRtWzNdKSsxDQogICAgICAgICAgICAgcGg8LWRhbmNlcnNbQV0NCiAgICAgICAgICAgICBkYW5jZXJzW0FdPC1kYW5jZXJzW0JdDQogICAgICAgICAgICAgZGFuY2Vyc1tCXTwtcGh9LA0KICAgICAgICAgICAjIyBzd2l0Y2hlcyB0d28gZGFuY2Vycw0KICAgICAgICAgICAicCI9ew0KICAgICAgICAgICAgIEE8LXdoaWNoKGRhbmNlcnM9PWRtWzJdKQ0KICAgICAgICAgICAgIEI8LXdoaWNoKGRhbmNlcnM9PWRtWzNdKQ0KICAgICAgICAgICAgIGRhbmNlcnNbQV08LWRtWzNdDQogICAgICAgICAgICAgZGFuY2Vyc1tCXTwtZG1bMl19LA0KICAgICAgICAgICBjYXQoInNvbWV0aGluZyB3ZW50IHdyb25nXG4iKSkNCiAgICAgDQogICAgIH0NCiAgZGFuY2Vyc30NCg0KYGBgDQoNCmBgYHtyfQ0KcGFydDE8LXN0cl9mbGF0dGVuKGNob3JlbygpKQ0KcGFydDENCmBgYA0KDQojIyBQYXJ0IDINCg0KT3B0aW9uIDEgLSBydW4gaXQgYSBiaWxsaW9uIHRpbWVzLg0KT3B0aW9uIDIgLSBmaWd1cmUgb3V0IGlmIGl0IHJlcGVhdHMuICBBbmQgb25seSBydW4gaXQgdGhhdCBtYW55IHRpbWVzLg0KDQpgYGB7cixldmFsPUZBTFNFfQ0Ka2lkZGluZ21lPC1sZXR0ZXJzWzE6MTZdDQpmb3IoaSBpbiAxOjEwMDAwMCl7DQpraWRkaW5nbWU8LWNob3JlbyhraWRkaW5nbWUsaW5wdXQpDQppZihhbGwoa2lkZGluZ21lWzE6Ml09PWxldHRlcnNbMToyXSkpe2NhdChpLGtpZGRpbmdtZSwiXG4iKX19DQpgYGANCkFzIGl0IHJlcGVhdHMgZXZlcnkgNjAgLQ0KYGBge3J9DQpraWRkaW5nbWU8LWxldHRlcnNbMToxNl0NCmZvcihpIGluIDE6KDEwMDAwMDAwMDAlJTYwKSl7DQpraWRkaW5nbWU8LWNob3JlbyhraWRkaW5nbWUsaW5wdXQpDQppZihhbGwoa2lkZGluZ21lWzE6Ml09PWxldHRlcnNbMToyXSkpe2NhdChpLGtpZGRpbmdtZSwiXG4iKX19DQpzdHJfZmxhdHRlbihraWRkaW5nbWUpDQpgYGANCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAxMCBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ2kpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KYGBge3J9DQppbnB1dDwtYygzLCA0LCAxLCA1KQ0KdHdpc3RoZXJlPC1hcy5udW1lcmljKHVubGlzdChzdHJfc3BsaXQoaW5wdXQsIiwiKSkpDQpgYGANCg0KIyMgUGFydCAxDQpTbywgbmVlZCBhIGZ1bmN0aW9uIHRoYXQgdGFrZXMgaW4gdGhlIGxpc3Qgb2YgbGVuZ3RocyAmIHRoZSBsaXN0IG9mIG51bWJlcnMNCg0KYGBge3J9DQp0d2lzdG1lPC1mdW5jdGlvbih0d2lzdHM9aW5wdXQsY2lyY2xlPTA6NCxyZXBzKXsNCiAgIyMjIHNldCB0aGUgc2tpcCBsZW5ndGggdG8gMA0KICBza3A8LTANCiAgbm93PC0xDQogICMjIyByZXBlYXRzIGFkZGVkIGZvciBwYXJ0IDINCiAgZm9yKGogaW4gMTpyZXBzKXsNCiAgZm9yKGkgaW4gMTpsZW5ndGgodHdpc3RzKSl7DQogICAgdHc8LXR3aXN0c1tpXQ0KICAgICMjIyBpZiBpdCBkb2Vzbid0IG5lZWQgdG8gd3JhcCBhcm91bmQNCiAgICBpZih0dytub3ctMTw9bGVuZ3RoKGNpcmNsZSkpew0KICAgICAgY2lyY2xlW25vdzoobm93K3R3LTEpXTwtcmV2KGNpcmNsZVtub3c6KG5vdyt0dy0xKV0pDQogICAgfWVsc2V7DQogICAgICAjIyMgZ2V0IHRoZSB2ZWN0b3IgdG8gcmV2ZXJzZSAodGhlIGVuZCBvZiB0aGlzIG9uZSwgdGhlIGZpcnN0IHBhcnQgb2YgdGhlIG5leHQpDQogICAgICBzdzwtYyhjaXJjbGVbbm93Omxlbmd0aChjaXJjbGUpXSxjaXJjbGVbMToobm93K3R3LTEtbGVuZ3RoKGNpcmNsZSkpXSkNCiAgICAgICMjIyByZXZlcnNlIGl0DQogICAgICBzdzwtcmV2KHN3KQ0KICAgICAgIyMjIHBhc3RlIGl0IGluDQogICAgICBjaXJjbGVbbm93Omxlbmd0aChjaXJjbGUpXTwtc3dbMToobGVuZ3RoKGNpcmNsZSktbm93KzEpXQ0KICAgICAgY2lyY2xlWzE6KG5vdyt0dy0xLWxlbmd0aChjaXJjbGUpKV08LXN3WyhsZW5ndGgoY2lyY2xlKS1ub3crMik6bGVuZ3RoKHN3KV19DQogICAgbm93PC1ub3crdHcrc2twDQogICAgd2hpbGUobm93Pmxlbmd0aChjaXJjbGUpKXtub3c8LW5vdy1sZW5ndGgoY2lyY2xlKX0NCiAgICBza3A8LXNrcCsxfX0NCmNpcmNsZX0NCmBgYA0KDQpgYGB7cn0NCnAxPC10d2lzdG1lKHR3aXN0aGVyZSwwOjI1NSwxKQ0KcGFydDE8LXByb2QocDFbMToyXSkNCnBhcnQxDQoNCmBgYA0KDQojI1BhcnQgMg0KDQpGaXJzdCAtIHNtYWxsIGNoYW5nZSBpbiB0aGUgInR3aXN0bWUoKSIgZnVuY3Rpb24gdG8gZG8gbXVsdGlwbGUgcmVwZWF0cw0KU2Vjb25kIC0gY29udmVydCB0aGUgaW5wdXQgc3RyaW5nDQoNCg0KYGBge3J9DQojIyMgdGhpcyBpcyBqdXN0IHRvIHNob3cgd2hhdCBjb252ZXJzaW9uIGlzIHN1cHBvc2VkIHRvIGRvDQp0d2lzdHR3bzwtYyhzYXBwbHkodW5saXN0KHN0cl9zcGxpdChpbnB1dCwiIikpLHV0ZjhUb0ludCksYygxNywzMSw3Myw0NywyMykpDQpgYGANClRoaXJkIC0gY3JlYXRlIGEgdmVyeSBzcGVjaWZpYyB4b3IgdGhhdCB3b3JrcyBvbiAxNiBkZWNpbWFscyB0byBjaGFuZ2UgdGhlbSBpbnRvIGFub3RoZXIgZGVjaW1hbC4NCg0KYGBge3J9DQp4b3JkZWM8LWZ1bmN0aW9uKG4sbSl7DQogIGFuc3dlcjwtMA0KICBmb3IoaSBpbiAxNTowKXsNCiAgICAjIyMgY29udmVydHMgbGVmdCB0byByaWdodCBieSBmaWd1cmluZyBvdXQgaWYgaXQgaGFzIHRoYXQgcG93ZXIgb2YgMiwgdGhlbiBtb3ZpbmcgZG93bi4NCiAgICBhbnN3ZXI8LWFuc3dlcit4b3IoKG4lLyUoMl5pKSksKG0lLyUoMl5pKSkpKjJeaQ0KICAgIG48LW4lJTJeaQ0KICAgIG08LW0lJTJeaX0NCiAgYW5zd2VyfQ0KYGBgDQoNCk5leHQgLSBjcmVhdGUgYSBmdW5jdGlvbiB0aGF0IHRha2VzIGEgc3BhcnNlIGhhc2ggYW5kIG1ha2VzIGl0IGRlbnNlDQoNCmBgYHtyfQ0KIyMjIFRoaXMgT05MWSB3b3JrcyB3ZWxsIGlmIHRoZXJlIGFyZSBhIG11bHRpcGxlIDE2IGNoYXJhY3RlcnMuIE9OTFkNCmRlbnNlaGFzaDwtZnVuY3Rpb24oc3Boc2gpew0KICBkaDwtYygpDQogIHdoaWxlKGxlbmd0aChzcGhzaCk+MCl7DQogICAgY2x1bXA8LXNwaHNoWzFdDQogICAgIyMgc3RhcnQgeG9yaW5nIHRoZSBmaXJzdCBudW1iZXJzIGZyb20gMS0xNQ0KICAgIGZvcihpIGluIDI6MTYpew0KICAgICAgY2x1bXA8LXhvcmRlYyhjbHVtcCxzcGhzaFtpXSl9DQogICAgIyMgcmVtb3ZlIHRob3NlIG51bWJlcnMgZnJvbSB0aGUgbGlzdA0KICAgIHNwaHNoPC1zcGhzaFstKDE6MTYpXQ0KICAgICMjIGFkZCB0aGF0IHRvIHRoZSBvdXRwdQ0KICAgIGRoPC1jKGRoLGNsdW1wKX0NCmRofQ0KYGBgDQoNCnBlbnVsdGltYXRlbHkgLSBjb252ZXJ0IGEgZGVuc2UgaGFzaCBpbnRvIGEga25vdCBoYXNoDQoNCmBgYHtyfQ0Ka25vdGhhc2g8LWZ1bmN0aW9uKGRoKXsNCiAga2g8LShzYXBwbHkoZGgsZnVuY3Rpb24oeCl7DQogICAgIyMgY2hhbmdlIGVhY2ggbnVtYmVyIHRvIGhleG1vZGUgYW5kIHRoZW4gdG8gYSBjaGFyYWN0ZXINCiAgICB4PC1hcy5jaGFyYWN0ZXIoYXMuaGV4bW9kZSh4KSkNCiAgICAjIyBpZiBpdCBpcyA8PTE1LCBtYWtlIHN1cmUgdGhhdCB0aGVyZSBhcmUgdHdvIGRpZ2l0cyAtIGFkZCBhIDAgYXQgdGhlIGZyb250DQogICAgaWYobmNoYXIoeCk9PTEpe3g8LXN0cl9jKCIwIix4KX1lbHNle3h9DQogICAgeH0pKQ0KICAjI3NtdXNoIGV2ZXJ5dGhpbmcgdG9nZXRoZXINCiAga2g8LXN0cl9mbGF0dGVuKGtoKQ0Ka2h9DQpgYGANCg0KVGhlbiB0byBydW4gaXQgYWxsIGF0IG9uY2U6DQoNCmBgYHtyfQ0KIyMjIFJlbWVtYmVyLCB0aGUgaW5wdXQgaXMgYSBzdHJpbmcNCmlucHV0PC0oIjEsMiwzIikNCnJldmlzZWxlbmd0aDwtdW5saXN0KGMoc2FwcGx5KHVubGlzdChzdHJfc3BsaXQoaW5wdXQsIiIpKSx1dGY4VG9JbnQpLGMoMTcsMzEsNzMsNDcsMjMpKSkNCnNwYXJzZWhhc2g8LXR3aXN0bWUocmV2aXNlbGVuZ3RoLDA6MjU1LDY0KQ0KZGg8LWRlbnNlaGFzaChzcGFyc2VoYXNoKQ0KcGFydDI8LWtub3RoYXNoKGRoKQ0KcGFydDINCmBgYA==</div>
 
 
 
@@ -1893,7 +1940,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Day16.Rmd");
+  window.initializeSourceEmbed("Day10.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
