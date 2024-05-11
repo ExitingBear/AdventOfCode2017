@@ -1,38 +1,139 @@
 ---
-title: "Day XX Notebook"
+title: "Day 14 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
 library(stringr)
 library(tidyverse)
 library(readr)
 library(collections)
+library(reshape2)
 options(scipen = 999)
 ```
 
-```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+## Part 1
+Apparently, start with the code from Day 10 - but leave it in binary instead of in hex:
 
+helper functions for twisting the loop and doing the decimal xor
+
+```{r}
+twistme<-function(twists=input,circle=0:4,reps){
+  ### set the skip length to 0
+  skp<-0
+  now<-1
+  ### repeats added for part 2
+  for(j in 1:reps){
+  for(i in 1:length(twists)){
+    tw<-twists[i]
+    ### if it doesn't need to wrap around
+    if(tw+now-1<=length(circle)){
+      circle[now:(now+tw-1)]<-rev(circle[now:(now+tw-1)])
+    }else{
+      ### get the vector to reverse (the end of this one, the first part of the next)
+      sw<-c(circle[now:length(circle)],circle[1:(now+tw-1-length(circle))])
+      ### reverse it
+      sw<-rev(sw)
+      ### paste it in
+      circle[now:length(circle)]<-sw[1:(length(circle)-now+1)]
+      circle[1:(now+tw-1-length(circle))]<-sw[(length(circle)-now+2):length(sw)]}
+    now<-now+tw+skp
+    while(now>length(circle)){now<-now-length(circle)}
+    skp<-skp+1}}
+circle}
+```
+
+
+```{r}
+xordec<-function(n,m){
+  answer<-0
+  for(i in 15:0){
+    ### converts left to right by figuring out if it has that power of 2, then moving down.
+    answer<-answer+xor((n%/%(2^i)),(m%/%(2^i)))*2^i
+    n<-n%%2^i
+    m<-m%%2^i}
+  answer}
 ```
 
 ```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
-
+### This ONLY works well if there are a multiple 16 characters. ONLY
+densehash<-function(sphsh){
+  dh<-c()
+  while(length(sphsh)>0){
+    clump<-sphsh[1]
+    ## start xoring the first numbers from 1-15
+    for(i in 2:16){
+      clump<-xordec(clump,sphsh[i])}
+    ## remove those numbers from the list
+    sphsh<-sphsh[-(1:16)]
+    ## add that to the outpu
+    dh<-c(dh,clump)}
+dh}
 ```
 
+```{r}
+knothash<-function(dh){
+  kh<-(sapply(dh,function(x){
+    ## change each number to hexmode and then to a character
+    x<-as.character(as.hexmode(x))
+    ## if it is <=15, make sure that there are two digits - add a 0 at the front
+    if(nchar(x)==1){x<-str_c("0",x)}else{x}
+    x}))
+  ##smush everything together
+  kh<-str_flatten(kh)
+kh}
+```
 
+```{r}
+fullknothash<-function(st){
+  ## split the string into characters (and add the ending)
+  st<-unlist(c(sapply(unlist(str_split(st,"")),utf8ToInt),c(17,31,73,47,23)))
+  ## twist the string
+  st<-twistme(st,0:255,64)
+  st<-densehash(st)
+  st<-knothash(st)
+st}
+```
+
+```{r}
+fullknothash("flqrgnkx-0")
+```
+```{r}
+kh2bin<-function(s){
+  b<-""
+  for(i in 1:nchar(s)){
+    c<-strtoi(str_sub(s,i,i),16)
+    for(j in 3:0){
+    b<-str_c(b,c%/%(2^j))
+    c<-c%%(2^j)}}
+  b}
+```
+
+```{r}
+discgrid<-function(s){
+  m<-matrix(nrow=128,ncol=128)
+  for(i in 1:128){
+    hashme<-str_c(s,"-",i-1)
+    hashme<-fullknothash(hashme)
+    hashme<-kh2bin(hashme)
+    hashme<-as.numeric(unlist(str_split(hashme,"")))
+    m[i,]<-hashme}
+  m}
+```
+
+```{r}
+p1<-discgrid("flqrgnkx")
+part1<-sum(p1)
+part1
+```
 ```{r,echo=FALSE}
-basicgraph<-ggplot()+
+
+a<-melt(p1)
+
+basicgraph<-ggplot(data=a,aes(x=Var2,y=Var1,color=value))+
+  geom_point()+
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
@@ -44,5 +145,46 @@ basicgraph<-ggplot()+
         legend.position="none")+
   scale_y_reverse()+
   coord_fixed()
+basicgraph
 ```
+## Part 2
+Flood fill
+```{r}
+regioncount<-function(m){
+  rc<-0
+  beenthere<-dict()
+  for(i in 1:nrow(m)){
+    for(j in 1:ncol(m)){
+      if(m[i,j]==1){
+        ## this counter is in the wrong (but working) place
+        rc<-rc+1
+        q<-queue()
+        q$push(c(i,j))
+        while(q$size()>0){
+          now<-q$pop()
+          ## for some reason, this is not working unless I use the paste rather than just the vector.
+          ## so - ok.
+          if(beenthere$has(paste(now))){next}
+          if(m[now[1],now[2]]==0){next}
+          ## setting the dictionary to the region counter.
+          beenthere$set(paste(now),rc)
+          ##left
+          if(now[1]>1){q$push(c(now[1]-1,now[2]))}
+          ##right
+          if(now[1]<nrow(m)){q$push(c(now[1]+1,now[2]))}
+          ##up
+          if(now[2]>1){q$push(c(now[1],now[2]-1))}
+          ##down
+          if(now[2]<ncol(m)){q$push(c(now[1],now[2]+1))}
+        }}}}
+  ## get all values for rc, find the unique, the length of the list is the answer
+  counter<-length(unique(unlist(beenthere$values())))
+  counter}
+```
+
+```{r}
+part2<-regioncount(p1)
+part2
+```
+
 

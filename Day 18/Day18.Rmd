@@ -1,13 +1,9 @@
 ---
-title: "Day XX Notebook"
+title: "Day 18 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
 library(stringr)
@@ -18,31 +14,189 @@ options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+input<-read_lines("Day18Sample.txt")
+```
 
+## Part 1
+
+The function takes in the instructions and runs them one at a time.  Registers are held in a dictionary - sounds are in a stack.
+
+```{r}
+playsong<-function(instructions){
+  r<-dict()
+  i<-1
+  lastsound<-stack()
+  while(i<=length(instructions)&&i>0){
+    inst<-as.list(unlist(str_split(instructions[i]," ")))
+    ### deal with registers here - set the second to 0, if it doesn't exist yet
+    if(inst[[2]] %in% letters && !r$has(inst[[2]])){r$set(inst[[2]],0)}
+    ### set the third
+    if(length(inst)==3){
+      ### if it exists,
+      if(inst[[3]]%in%letters){
+        if(r$has(inst[[3]])){inst[[3]]<-r$get(inst[[3]])
+        }else{
+          r$set(inst[[3]],0)
+          inst[[3]]<-0}}
+      inst[[3]]<-as.numeric(inst[[3]])}
+    switch(inst[[1]],
+           "snd"={
+             if(inst[[2]]%in%letters){inst[[2]]<-r$get(inst[[2]])}
+             inst[[2]]<-as.numeric(inst[[2]])
+             lastsound$push(inst[[2]])
+           cat("sounding",inst[[2]],"\n")
+           },
+           "set"={r$set(inst[[2]],inst[[3]])},
+           "add"={r$set(inst[[2]],r$get(inst[[2]])+inst[[3]])},
+           "mul"={r$set(inst[[2]],r$get(inst[[2]])*inst[[3]])},
+           "mod"={r$set(inst[[2]],r$get(inst[[2]])%%inst[[3]])},
+           "rcv"={
+             if(inst[[2]]%in%letters){inst[[2]]<-r$get(inst[[2]])}
+             inst[[2]]<-as.numeric(inst[[2]])
+           if(inst[[2]]!=0){
+               if(lastsound$size()>0){
+               cat("recover",lastsound$pop(),"\n")}
+               }},
+           "jgz"={
+             if(inst[[2]]%in%letters){inst[[2]]<-r$get(inst[[2]])}
+             inst[[2]]<-as.numeric(inst[[2]])
+             if(inst[[2]]>0){i<-i+inst[[3]]
+             next}},
+           cat("****",inst," :something went wrong\n"))
+    i<-i+1}}
 ```
 
 ```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
-
+playsong(input)
 ```
 
+## Part 2
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+Very similar to part 1
+
+
+```{r}
+realduet<-function(instructions){
+  ### alto is p0, bari is 
+  altoqueue<-queue()
+  bariqueue<-queue()
+  altonotes<-dict()
+  barinotes<-dict()
+  ### set alto p to 0, bari p to 1
+  altonotes$set("p",0)
+  barinotes$set("p",1)
+  alto<-1
+  bari<-1
+  rest<-FALSE
+  altocounter<-0
+  baricounter<-0
+  while(!rest){
+    ### if ANY instruction runs, reset rest to false
+    ###Stop when we've gone through everything once with no instructions possible
+    rest<-TRUE
+    
+    ### alto stuff
+    
+    while(alto<=length(instructions)){
+      inst<-as.list(unlist(str_split(instructions[alto]," ")))
+      ### deal with registers here - set the second to 0, if it doesn't exist yet
+      if(inst[[2]] %in% letters && !altonotes$has(inst[[2]])){altonotes$set(inst[[2]],0)}
+      ### set the third
+      if(length(inst)==3){
+        ### if it exists,
+        if(inst[[3]]%in%letters){
+          if(altonotes$has(inst[[3]])){inst[[3]]<-altonotes$get(inst[[3]])
+          }else{
+            altonotes$set(inst[[3]],0)
+            inst[[3]]<-0}}
+        inst[[3]]<-as.numeric(inst[[3]])}
+      switch(inst[[1]],
+             "snd"={
+               if(inst[[2]]%in%letters){inst[[2]]<-altonotes$get(inst[[2]])}
+               inst[[2]]<-as.numeric(inst[[2]])
+               bariqueue$push(inst[[2]])
+#               cat("sent to b",inst[[2]],"\n")
+               altocounter<-altocounter+1
+               rest<-FALSE},
+             "set"={altonotes$set(inst[[2]],inst[[3]])
+               rest<-FALSE},
+             "add"={altonotes$set(inst[[2]],altonotes$get(inst[[2]])+inst[[3]])
+               rest<-FALSE},
+             "mul"={altonotes$set(inst[[2]],altonotes$get(inst[[2]])*inst[[3]])
+               rest<-FALSE},
+             "mod"={altonotes$set(inst[[2]],altonotes$get(inst[[2]])%%inst[[3]])
+               rest<-FALSE},
+             "rcv"={
+               if(altoqueue$size()==0){break
+               }else{
+                 altonotes$set(inst[[2]],altoqueue$pop())
+ #                cat("a picked up\n")
+                 rest<-FALSE}},
+             "jgz"={
+               if(inst[[2]]%in%letters){inst[[2]]<-altonotes$get(inst[[2]])}
+               inst[[2]]<-as.numeric(inst[[2]])
+               if(inst[[2]]>0){alto<-alto+inst[[3]]
+               rest<-FALSE
+               next}
+               rest<-FALSE},
+             cat("****",inst," :something went wrong\n"))
+      alto<-alto+1}  
+    
+    ### bari stuff
+    
+    while(bari<=length(instructions)){
+      inst<-as.list(unlist(str_split(instructions[bari]," ")))
+      ### deal with registers here - set the second to 0, if it doesn't exist yet
+      if(inst[[2]] %in% letters && !barinotes$has(inst[[2]])){barinotes$set(inst[[2]],0)}
+      ### set the third
+      if(length(inst)==3){
+        ### if it exists,
+        if(inst[[3]]%in%letters){
+          if(barinotes$has(inst[[3]])){inst[[3]]<-barinotes$get(inst[[3]])
+          }else{
+            barinotes$set(inst[[3]],0)
+            inst[[3]]<-0}}
+        inst[[3]]<-as.numeric(inst[[3]])}
+      switch(inst[[1]],
+             "snd"={
+               if(inst[[2]]%in%letters){inst[[2]]<-barinotes$get(inst[[2]])}
+               inst[[2]]<-as.numeric(inst[[2]])
+               altoqueue$push(inst[[2]])
+   #           cat("sent to a",inst[[2]],"\n")
+               baricounter<-baricounter+1
+               rest<-FALSE},
+             "set"={barinotes$set(inst[[2]],inst[[3]])
+               rest<-FALSE},
+             "add"={barinotes$set(inst[[2]],barinotes$get(inst[[2]])+inst[[3]])
+               rest<-FALSE},
+             "mul"={barinotes$set(inst[[2]],barinotes$get(inst[[2]])*inst[[3]])
+               rest<-FALSE},
+             "mod"={barinotes$set(inst[[2]],barinotes$get(inst[[2]])%%inst[[3]])
+               rest<-FALSE},
+             "rcv"={
+               if(bariqueue$size()==0){break
+               }else{
+                 barinotes$set(inst[[2]],bariqueue$pop())
+       #          cat("b picked up\n")
+                 rest<-FALSE}},
+             "jgz"={
+               if(inst[[2]]%in%letters){inst[[2]]<-barinotes$get(inst[[2]])}
+               inst[[2]]<-as.numeric(inst[[2]])
+               if(inst[[2]]>0){bari<-bari+inst[[3]]
+               rest<-FALSE
+               next}
+               rest<-FALSE},
+             cat("****",inst," :something went wrong\n"))
+      bari<-bari+1}
+  }
+  c(altocounter,baricounter)}
+```
+
+```{r}
+
+p2<-realduet(input)
+part2<-p2[2]
+part2
+
 ```
 

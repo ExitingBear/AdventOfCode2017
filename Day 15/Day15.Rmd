@@ -1,13 +1,9 @@
 ---
-title: "Day XX Notebook"
+title: "Day 15 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
 library(stringr)
@@ -18,31 +14,46 @@ options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+robotduel<-function(a,b,turns){
+  itsatie<-0
+  for(i in 1:turns){
+    ## calculate next values
+    a<-(16807*a)%%2147483647
+    b<-(48271*b)%%2147483647
+    ## the final 16 is mod 65536, so those are the only ones to stay interested in
+    if(a%%65536==b%%65536){itsatie<-itsatie+1}
+    }
+  itsatie}
 
 ```
 
 ```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
+part1<-robotduel(65,8921,40000000)
+part1
+```
+```{r}
+longrobotduel<-function(a,b,turns){
+  itsatie<-0
+  for(i in 1:turns){
+    ##generate the first/next a
+    a<-(16807*a)%%2147483647
+    ##keep generating a until something is divisible by 4
+    while(a%%4!=0){
+    a<-(16807*a)%%2147483647}
+    ##generate the first/next b
+    b<-(48271*b)%%2147483647
+    ## keep generating until b is divisible by 8
+    while(b%%8!=0){
+    b<-(48271*b)%%2147483647}
+    ##compare
+    if(a%%65536==b%%65536){itsatie<-itsatie+1}}
+  itsatie}
 
 ```
 
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+```{r}
+part2<-longrobotduel(65,8921,5000000)
+part2
 ```
 

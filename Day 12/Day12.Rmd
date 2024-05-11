@@ -1,12 +1,11 @@
 ---
-title: "Day XX Notebook"
+title: "Day 12 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
 library(igraph)
 library(ggplot2)
-library(rgl)
 library(ggraph)
 library(knitr)
 library(dplyr)
@@ -18,21 +17,43 @@ options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
-
+input<-read_lines("Day12Sample.txt")
 ```
+
+## Part 1
+Another graph!
+
+Start by putting the programs into a graph
+```{r}
+pipegraphdf<-matrix(ncol=2,nrow=0)
+for(i in 1:length(input)){
+  pipette<-unlist(str_split(str_replace_all(input[i],",","")," "))
+  for(j in 3:length(pipette)){
+    pipegraphdf<-rbind(pipegraphdf,c(pipette[1],pipette[j]))}}
+
+pipegraph<-igraph::simplify(graph_from_edgelist(pipegraphdf,directed=FALSE))
+```
+
+
 
 ```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
-
+part1<-length(subcomponent(pipegraph,"0"))
+part1
 ```
+
+## Part 2
+
+```{r}
+part2<-count_components(pipegraph)
+part2
+```
+
 
 
 ```{r,echo=FALSE}
-basicgraph<-ggplot()+
+basicgraph<-ggraph(pipegraph,layout="kk")+
+  geom_node_point()+
+  geom_edge_link()+
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
@@ -41,8 +62,7 @@ basicgraph<-ggplot()+
         axis.title.x = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+        legend.position="none")
+basicgraph
 ```
 

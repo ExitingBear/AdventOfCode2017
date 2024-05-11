@@ -1,13 +1,9 @@
 ---
-title: "Day XX Notebook"
+title: "Day 13 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
 library(stringr)
@@ -18,31 +14,62 @@ options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+input<-read_lines("Day13Sample.txt")
+scanners<-list()
+### create the scanners as list of vectors of c(depth,length)
+for(i in 1:length(input)){
+  s<-as.numeric(unlist(str_split((str_remove_all(input[i],":"))," ")))
+  scanners<-c(scanners,list(s))}
+```
+## Part 1
+Create a function to say whether or not you were caught
 
+```{r}
+severitymeasure<-function(starting=0,scnrs=scanners){
+### set severity to 0
+    severity<-0
+  for(i in 1:length(scanners)){
+    s<-scanners[[i]]
+    ### each scanner is on a cycle of 2*(scannerlength-1)
+    ### a collision will happen if it is at 0 on that cycle - offset of by when the start is.
+    if((starting+s[1])%%(2*(s[2]-1))==0){
+      ### if there's a collision, add the severity (depth*length) to the severity counter
+      severity<-severity+prod(s)}}
+  severity}
 ```
 
 ```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
+severitymeasure(0,scanners)
+part1<-part1
+```
 
+## Part 2
+So - there's the right way and there's BRUTE FORCE!!  
+```{r}
+catchme<-function(starting=0,scnrs=scanners){
+  caught<-FALSE
+  i<-1
+  while(i<=length(scanners)&&!caught){
+    ### if there's a collision, mark as TRUE.  Stop
+    s<-scanners[[i]]
+    if((starting+s[1])%%(2*(s[2]-1))==0){
+      caught<-TRUE
+      break}
+    i<-i+1}
+caught}
 ```
 
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
-```
 
+```{r}
+i<-0
+keepgoing<-TRUE
+while(keepgoing){
+  ### start at time=1 & keep going until caught is FALSE
+  x<-catchme(i,scanners)
+  if(!x){keepgoing=FALSE
+  }else{
+    i<-i+1}}
+part2<-i
+part2
+```

@@ -1,15 +1,12 @@
 ---
-title: "Day XX Notebook"
+title: "Day 10 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
+library(stringi)
 library(stringr)
 library(tidyverse)
 library(readr)
@@ -18,31 +15,110 @@ options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+input<-c(3, 4, 1, 5)
+twisthere<-as.numeric(unlist(str_split(input,",")))
+```
 
+## Part 1
+So, need a function that takes in the list of lengths & the list of numbers
+
+```{r}
+twistme<-function(twists=input,circle=0:4,reps){
+  ### set the skip length to 0
+  skp<-0
+  now<-1
+  ### repeats added for part 2
+  for(j in 1:reps){
+  for(i in 1:length(twists)){
+    tw<-twists[i]
+    ### if it doesn't need to wrap around
+    if(tw+now-1<=length(circle)){
+      circle[now:(now+tw-1)]<-rev(circle[now:(now+tw-1)])
+    }else{
+      ### get the vector to reverse (the end of this one, the first part of the next)
+      sw<-c(circle[now:length(circle)],circle[1:(now+tw-1-length(circle))])
+      ### reverse it
+      sw<-rev(sw)
+      ### paste it in
+      circle[now:length(circle)]<-sw[1:(length(circle)-now+1)]
+      circle[1:(now+tw-1-length(circle))]<-sw[(length(circle)-now+2):length(sw)]}
+    now<-now+tw+skp
+    while(now>length(circle)){now<-now-length(circle)}
+    skp<-skp+1}}
+circle}
 ```
 
 ```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
+p1<-twistme(twisthere,0:255,1)
+part1<-prod(p1[1:2])
+part1
 
 ```
 
+##Part 2
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+First - small change in the "twistme()" function to do multiple repeats
+Second - convert the input string
+
+
+```{r}
+### this is just to show what conversion is supposed to do
+twisttwo<-c(sapply(unlist(str_split(input,"")),utf8ToInt),c(17,31,73,47,23))
+```
+Third - create a very specific xor that works on 16 decimals to change them into another decimal.
+
+```{r}
+xordec<-function(n,m){
+  answer<-0
+  for(i in 15:0){
+    ### converts left to right by figuring out if it has that power of 2, then moving down.
+    answer<-answer+xor((n%/%(2^i)),(m%/%(2^i)))*2^i
+    n<-n%%2^i
+    m<-m%%2^i}
+  answer}
 ```
 
+Next - create a function that takes a sparse hash and makes it dense
+
+```{r}
+### This ONLY works well if there are a multiple 16 characters. ONLY
+densehash<-function(sphsh){
+  dh<-c()
+  while(length(sphsh)>0){
+    clump<-sphsh[1]
+    ## start xoring the first numbers from 1-15
+    for(i in 2:16){
+      clump<-xordec(clump,sphsh[i])}
+    ## remove those numbers from the list
+    sphsh<-sphsh[-(1:16)]
+    ## add that to the outpu
+    dh<-c(dh,clump)}
+dh}
+```
+
+penultimately - convert a dense hash into a knot hash
+
+```{r}
+knothash<-function(dh){
+  kh<-(sapply(dh,function(x){
+    ## change each number to hexmode and then to a character
+    x<-as.character(as.hexmode(x))
+    ## if it is <=15, make sure that there are two digits - add a 0 at the front
+    if(nchar(x)==1){x<-str_c("0",x)}else{x}
+    x}))
+  ##smush everything together
+  kh<-str_flatten(kh)
+kh}
+```
+
+Then to run it all at once:
+
+```{r}
+### Remember, the input is a string
+input<-("1,2,3")
+reviselength<-unlist(c(sapply(unlist(str_split(input,"")),utf8ToInt),c(17,31,73,47,23)))
+sparsehash<-twistme(reviselength,0:255,64)
+dh<-densehash(sparsehash)
+part2<-knothash(dh)
+part2
+```

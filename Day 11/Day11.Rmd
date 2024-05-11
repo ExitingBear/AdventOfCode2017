@@ -1,13 +1,10 @@
 ---
-title: "Day XX Notebook"
+title: "Day 11 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
+
 library(knitr)
 library(dplyr)
 library(stringr)
@@ -18,31 +15,85 @@ options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+input<-read_lines("Day11Sample.txt")
+```
+
+## Part 1
+I blatantly stole this one:
+
+Using three coordinates (instead of two) it's possible to figure out how far away - 
+for this:
+a is N/S. Moving N/S a doesn't change.  Moving E, a goes down, moving W, a goes up
+b is NE/SW.  Moving SE or S, b goes up, moving N or NW, b goes down
+c is NW/SE.  Moving N/NE, c goes up, moving S/Sw, c goes down.
+so, every move, one thing is going up, one is going down.
+the total distance, will be the max of the absolute value of a, b, and c
+
+```{r}
+hexed<-function(str){
+  str<-unlist(str_split(str,","))
+  a<-0
+  b<-0
+  c<-0
+  for(i in 1:length(str)){
+    stp<-str[i]
+    switch(stp,
+           "n"={b<-b-1
+           c<-c+1},
+           "ne"={a<-a-1
+           c<-c+1},
+           "se"={a<-a-1
+           b<-b+1},
+           "s"={b<-b+1
+           c<-c-1},
+           "sw"={a<-a+1
+           c<-c-1},
+           "nw"={a<-a+1
+           b<-b-1},
+           cat(stp,"-something is wrong\n"))}
+  answer<-max(abs(a),abs(b),abs(c))
+  answer}
+
+```
+
+
+```{r}
+sapply(input,hexed)
+
+```
+## Part 2
+Small change to save the max as it goes by:
+```{r}
+veryhexed<-function(str){
+  str<-unlist(str_split(str,","))
+  a<-0
+  b<-0
+  c<-0
+  maxabc<-0
+  for(i in 1:length(str)){
+    stp<-str[i]
+    switch(stp,
+           "n"={b<-b-1
+           c<-c+1},
+           "ne"={a<-a-1
+           c<-c+1},
+           "se"={a<-a-1
+           b<-b+1},
+           "s"={b<-b+1
+           c<-c-1},
+           "sw"={a<-a+1
+           c<-c-1},
+           "nw"={a<-a+1
+           b<-b-1},
+           cat(stp,"-something is wrong\n"))
+    maxabc<-max(maxabc,max(abs(a)),max(abs(b)),max(abs(c)))}
+  answer<-max(abs(a),abs(b),abs(c))
+  maxabc}
 
 ```
 
 ```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
+sapply(input,veryhexed)
 
-```
-
-
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
 ```
 
