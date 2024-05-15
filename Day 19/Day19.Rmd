@@ -1,13 +1,10 @@
 ---
-title: "Day XX Notebook"
+title: "Day 19 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
 library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
 library(stringr)
@@ -18,31 +15,127 @@ options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+input<-read_lines("Day19Sample.txt")
 
 ```
 
 ```{r}
 ### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
+tubemap<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
+for(i in 1:length(input)){tubemap[i,]<-(unlist(str_split(input[i],"")))}
 
 ```
 
+## Part 1
+Just traverse the graph
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+```{r}
+letterhunt<-function(m){
+  ### collect the list of letters
+  letterlist<-c()
+  ### also, mark if have been to that letter at that place (in case it's on a cross point)
+  foundletter<-dict()
+  ## start by finding the starting point
+  now<-c(1,which(m[1,]=="|"))
+  ## and starting direction
+  d<-"D"
+  keepgoing<-TRUE
+  ## keep 
+  stepcounter<-0
+  while(keepgoing){
+    switch(d,
+           "D"={
+             ### find the next positio
+             nxtp<-now+c(1,0)
+             ### find what's there
+             nxtc<-m[nxtp[1],nxtp[2]]
+             ### if at the end of the line, stop
+             if(is.na(nxtc)||nxtc==" "){
+               keepgoing<-FALSE
+               break
+               ### if its a letter, add to list
+               ### move there
+             }else if(nxtc%in%LETTERS){
+               if(!foundletter$has(c(nxtp,nxtc))){
+                 letterlist<-c(letterlist,nxtc)
+                 foundletter$set(c(nxtp,nxtc),1)}
+               now<-nxtp
+               ### if it's a "+" change directions
+             }else if(nxtc=="+"){
+               if(m[now[1]+1,now[2]+1]=="-"||m[now[1]+1,now[2]+1]%in%LETTERS){d<-"R"}else{d<-"L"}
+               now<-nxtp
+               ### otherwise, just move forward
+             }else{now<-nxtp}},
+           "U"={
+             nxtp<-now+c(-1,0)
+             nxtc<-m[nxtp[1],nxtp[2]]
+             ### if at the end of the line, stop
+             if(is.na(nxtc)||nxtc==" "){
+               keepgoing<-FALSE
+               break
+             }else if(nxtc%in%LETTERS){
+               if(!foundletter$has(c(nxtp,nxtc))){
+                 letterlist<-c(letterlist,nxtc)
+                 foundletter$set(c(nxtp,nxtc),1)}
+               now<-nxtp
+             }else if(nxtc=="+"){
+               if(m[now[1]-1,now[2]+1]=="-"||m[now[1]-1,now[2]+1]%in%LETTERS){d<-"R"}else{d<-"L"}
+               now<-nxtp
+             }else{now<-nxtp}},
+           "L"={
+             nxtp<-now+c(0,-1)
+             nxtc<-m[nxtp[1],nxtp[2]]
+             ### if at the end of the line, stop
+             if(is.na(nxtc)||nxtc==" "){
+               keepgoing<-FALSE
+               break
+             }else if(nxtc%in%LETTERS){
+               if(!foundletter$has(c(nxtp,nxtc))){
+                 letterlist<-c(letterlist,nxtc)
+                 foundletter$set(c(nxtp,nxtc),1)}
+               now<-nxtp
+             }else if(nxtc=="+"){
+               if(m[now[1]-1,now[2]-1]=="|"||m[now[1]-1,now[2]-1]%in%LETTERS){d<-"U"}else{d<-"D"}
+               now<-nxtp
+             }else{now<-nxtp}},
+           "R"={
+             nxtp<-now+c(0,1)
+             nxtc<-m[nxtp[1],nxtp[2]]
+             ### if at the end of the line, stop
+             if(is.na(nxtc)||nxtc==" "){
+               keepgoing<-FALSE
+               break
+             }else if(nxtc%in%LETTERS){
+               if(!foundletter$has(c(nxtp,nxtc))){
+                 letterlist<-c(letterlist,nxtc)
+                 foundletter$set(c(nxtp,nxtc),1)}
+               now<-nxtp
+             }else if(nxtc=="+"){
+               if(m[now[1]-1,now[2]+1]=="|"||m[now[1]-1,now[2]+1]%in%LETTERS){d<-"U"}else{d<-"D"}
+               now<-nxtp
+             }else{now<-nxtp}},
+           {cat("direction went wrong\n")
+             break})
+    stepcounter<-stepcounter+1}
+  ### add 1 for the final step.
+  stepcounter<-stepcounter+1
+list(str_flatten(letterlist),stepcounter)}
+```
+
+
+```{r}
+lh<-letterhunt(tubemap)
+part1<-lh[[1]]
+part1
+```
+
+
+
+## Part 2
+I think I just add a step counter.
+
+```{r}
+part2<-lh[[2]]
+part2
 ```
 

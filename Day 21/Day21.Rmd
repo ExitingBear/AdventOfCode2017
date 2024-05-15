@@ -1,13 +1,10 @@
 ---
-title: "Day XX Notebook"
+title: "Day 21 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
 library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
 library(stringr)
@@ -18,31 +15,113 @@ options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+input<-read_lines("../../AoCData/AOC2017/Day21.txt")
+```
 
+
+## Part 1
+Flip & Rotate - takes in a matrix/string, spits out all 8 rotations for that matrix (in string form)
+```{r}
+fandr<-function(m){
+  ### create the matrices
+  m90<-matrix(NA,nrow=nrow(m),ncol=ncol(m))
+  m180<-matrix(NA,nrow=nrow(m),ncol=ncol(m))
+  m270<-matrix(NA,nrow=nrow(m),ncol=ncol(m))
+  f<-matrix(NA,nrow=nrow(m),ncol=ncol(m))
+  f90<-matrix(NA,nrow=nrow(m),ncol=ncol(m))
+  f180<-matrix(NA,nrow=nrow(m),ncol=ncol(m))
+  f270<-matrix(NA,nrow=nrow(m),ncol=ncol(m))
+  y<-nrow(m)+1
+  for(r in 1:nrow(m)){
+    ### fill the matrices
+    for(c in 1:ncol(m)){
+      x<-m[r,c]
+      m90[r,y-c]<-x 
+      m180[y-r,c]<-x 
+      m270[y-r,y-c]<-x 
+      f[c,r]<-x  
+      f90[y-c,r]<-x 
+      f180[c,y-r]<-x
+      f270[y-c,y-r]<-x}}
+  ### remove the ones that are redundant
+  unique(list(m,m90,m180,m270,f,f90,f180,f270))}
+```
+
+Create the dictionary using the rotater/flipper.  This way, instead of trying to flip the matrix part around, the dictionary contains all the reflections/flips  
+
+```{r,eval=FALSE}
+artrules<-dict()
+for(i in 1:length(input)){
+  entry<-unlist(str_split(str_replace_all(input[i],"\\/","")," => "))
+  v<-unlist(str_split(entry[2],""))
+  v<-matrix(v,nrow=sqrt(length(v)),byrow=TRUE)
+  k<-unlist(str_split(entry[1],""))
+  k<-matrix(k,nrow=sqrt(length(k)),byrow=TRUE)
+  allkeys<-unique(fandr(k))
+  for(j in 1:length(allkeys)){artrules$set(allkeys[[j]],v)}}
+```
+
+Create the starter square
+
+```{r}
+starter<-matrix(c(".","#",".",
+".",".","#",
+"#","#","#"),nrow=3,byrow=TRUE)
 ```
 
 ```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
-
+two2three<-function(m,d){
+  ### create a blank matrix with the right number of columns
+  outm<-matrix(ncol=(3*ncol(m)/2),nrow=0)
+  for(r in seq(from=1,to=nrow(m),by=2)){
+    ### create an empty matrix with the right number of rows
+    quickm<-matrix(ncol=0,nrow=3)
+    for(c in seq(from=1,to=ncol(m),by=2)){
+      ### get the matrix piece
+      t<-m[r:(r+1),c:(c+1)]
+      ### get the transform value
+      t<-d$get(t)
+      quickm<-cbind(quickm,t)}
+    ### add them all together
+    outm<-rbind(outm,quickm)}
+  outm}
 ```
 
-
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+```{r}
+three2four<-function(m,d){
+  outm<-matrix(ncol=(4*ncol(m)/3),nrow=0)
+  for(r in seq(from=1,to=nrow(m),by=3)){
+    quickm<-matrix(ncol=0,nrow=4)
+    for(c in seq(from=1,to=ncol(m),by=3)){
+      t<-m[r:(r+2),c:(c+2)]
+      t<-d$get(t)
+      quickm<-cbind(quickm,t)}
+    outm<-rbind(outm,quickm)}
+  outm}
 ```
 
+```{r}
+makesomeart<-function(m,d,reps){
+  masterpiece<-m
+  for(i in 1:reps){
+    if(ncol(masterpiece)%%2==0){
+      masterpiece<-two2three(masterpiece,d)
+    }else{
+        masterpiece<-three2four(masterpiece,d)}}
+masterpiece}
+  
+```
+
+```{r,eval=FALSE}
+p1<-makesomeart(starter,artrules,5)
+part1<-length(which(p1=="#"))
+part1
+```
+
+## Part 2
+
+```{r,eval=FALSE}
+p2<-makesomeart(starter,artrules,18)
+part2<-length(which(p2=="#"))
+part2
+```
