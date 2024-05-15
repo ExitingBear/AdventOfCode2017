@@ -1,13 +1,10 @@
 ---
-title: "Day XX Notebook"
+title: "Day 22 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
 library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
 library(stringr)
@@ -18,31 +15,131 @@ options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+input<-read_lines("Day22Sample.txt")
+```
+
+```{r}
+### Matrix
+#inmap<-matrix(0,nrow=length(input)+8,ncol=nchar(input[1])+8)
+#for(i in 1:length(input)){inmap[(i+4),]<-c(rep("#",4),unlist(str_split(input[i],"")),rep("#",4))}
+#inmap(1:4,)<-"#"
+#inmap((nrow(inmap)-3):nrow(inmap),)<-"#"
 
 ```
 
 ```{r}
 ### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
-
+inmap<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
+for(i in 1:length(input)){inmap[i,]<-c(unlist(str_split(input[i],"")))}
 ```
 
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+##Part 1
+I'm going to try this with a dictionary because... why not?
+
+```{r}
+infection<-function(m,reps){
+  infcount<-0
+  idict<-dict()
+  for(r in 1:nrow(m)){
+    for(c in 1:ncol(m)){
+      idict$set(c(r+0,c+0),m[r,c])}}
+  whereami<-c((nrow(m)+1)/2,(ncol(m)+1)/2)
+  d<-"U"
+  rc<-1
+  while(rc<=reps){
+    ## get current node
+    if(!idict$has(whereami)){idict$set(whereami,".")}
+    ## instructions if infected
+    if(idict$get(whereami)=="#"){
+      ### change directions
+      switch(d,"U"=d<-"R",
+             "D"=d<-"L",
+             "L"=d<-"U",
+             "R"=d<-"D",
+             cat("bad sick direction\n"))
+      ## cure
+      idict$set((whereami+0),".")
+    }else{
+      switch(d,"U"=d<-"L",
+             "D"=d<-"R",
+             "L"=d<-"D",
+             "R"=d<-"U",
+             cat("bad well direction\n"))
+      ## cure
+      infcount<-infcount+1
+      idict$set((whereami+0),"#")}
+    ### move forward
+      switch(d,"U"=whereami<-whereami+c(-1,0),
+             "D"=whereami<-whereami+c(1,0),
+             "L"=whereami<-whereami+c(0,-1),
+             "R"=whereami<-whereami+c(0,1),
+             cat("bad move direction\n"))
+        rc<-rc+1}
+  infcount}
 ```
 
+```{r}
+part1<-infection(inmap,10000)
+part1
+```
+## Part 2
+Stronger Virus, more rules:
+
+```{r}
+mutateinfection<-function(m,reps){
+  infcount<-0
+  idict<-dict()
+  for(r in 1:nrow(m)){
+    for(c in 1:ncol(m)){
+      idict$set(c(r+0,c+0),m[r,c])}}
+  whereami<-c((nrow(m)+1)/2,(ncol(m)+1)/2)
+  d<-"U"
+  rc<-1
+  while(rc<=reps){
+    ## get current node
+    if(idict$has(whereami)){infstate<-idict$get(whereami)}else{infstate<-"."}
+    ## instructions if infected
+    if(infstate=="#"){
+      ### change directions
+      switch(d,"U"=d<-"R",
+             "D"=d<-"L",
+             "L"=d<-"U",
+             "R"=d<-"D",
+             cat("bad sick direction\n"))
+      ## cure
+      idict$set((whereami+0),"F")
+    }else if(infstate=="."){
+      switch(d,"U"=d<-"L",
+             "D"=d<-"R",
+             "L"=d<-"D",
+             "R"=d<-"U",
+             cat("bad well direction\n"))
+      ## cure
+      idict$set((whereami+0),"W")
+    }else if(infstate=="F"){
+      switch(d,"U"=d<-"D",
+             "D"=d<-"U",
+             "L"=d<-"R",
+             "R"=d<-"L",
+             cat("bad flag direction\n"))
+      ## cure
+      idict$set((whereami+0),".")
+    }else{
+      idict$set((whereami+0),"#")
+      infcount<-infcount+1}
+    ### move forward
+      switch(d,"U"=whereami<-whereami+c(-1,0),
+             "D"=whereami<-whereami+c(1,0),
+             "L"=whereami<-whereami+c(0,-1),
+             "R"=whereami<-whereami+c(0,1),
+             cat("bad move direction\n"))
+        rc<-rc+1}
+  infcount}
+```
+
+
+```{r}
+part2<-mutateinfection(inmap,10000000)
+part2
+```

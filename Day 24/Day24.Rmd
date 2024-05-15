@@ -1,13 +1,9 @@
 ---
-title: "Day XX Notebook"
+title: "Day 24 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
 library(stringr)
@@ -18,31 +14,114 @@ options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+input<-read_lines("Day24Sample.txt")
+components<-as.data.frame(matrix(nrow=0,ncol=2))
+for(i in 1:length(input)){
+  c<-as.numeric(unlist(str_split(input[i],"/")))
+  components<-rbind(components,c)}
+colnames(components)<-c("A","B")
+```
+
+## Part 1
+Search, I guess? Because I *think* the df is small enough, just making a ton of copies.
+
+```{r}
+findchain<-function(c){
+  ### added a queue in case I think of a good hueristic someday - the current one is not good.
+  q<-priority_queue()
+  ## to hold the path
+  spth<-as.data.frame(matrix(nrow=0,ncol=2))
+  starter<-list(0,spth,c)
+  ### push the starting state
+  q$push(starter,0)
+  maxstrong<-0
+  pthstrong<-c
+  counter<-1
+  while(q$size()>0){
+    now<-q$pop()
+    mtch<-now[[1]]
+    pth<-now[[2]]
+    rmn<-now[[3]]
+    ### if it matches the first half of the component, make the second half the next matcher
+    if(!mtch%in%rmn$A && !mtch%in%rmn$B){
+      counter<-counter+1
+      if(maxstrong<(sum(pth$A)+sum(pth$B))){
+        maxstrong<-sum(pth$A)+sum(pth$B)
+        pthstrong<-pth}
+      next}
+    ### if it matches the second half (and the two halfs aren't the same, makethe first half the next matcher)
+    if(mtch %in% rmn$A){
+      for(i in which(rmn$A==mtch)){
+        nxtrmn<-rmn[-i,]
+        nxtpth<-rbind(pth,rmn[i,])
+        nxtmtch<-rmn$B[i]
+        q$push((list(nxtmtch,nxtpth,nxtrmn)),-sum(nxtpth$A)-sum(nxtpth$B))}}
+    ### no need to do this twice for x/x
+    if(mtch %in% rmn$B){
+      for(i in which(rmn$B==mtch)){
+        if(rmn$A[i]!=mtch){
+        nxtrmn<-rmn[-i,]
+        nxtpth<-rbind(pth,rmn[i,])
+        nxtmtch<-rmn$A[i]
+        q$push((list(nxtmtch,nxtpth,nxtrmn)),-sum(nxtpth$A)-sum(nxtpth$B))}}}}
+maxstrong}
 
 ```
 
 ```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
+part1<-findchain(components)
+part1
+```
 
+## Part 2
+An extension of part 1, just add to the check to see if it is longer than the previous long and if it is stronger than something of the same length
+
+```{r}
+findlongchain<-function(c){
+  q<-priority_queue()
+  beenthere<-c
+  spth<-as.data.frame(matrix(nrow=0,ncol=2))
+  starter<-list(0,spth,c)
+  q$push(starter,0)
+  maxstrong<-0
+  maxlong<-0
+  counter<-1
+  while(q$size()>0){
+    now<-q$pop()
+    mtch<-now[[1]]
+    pth<-now[[2]]
+    rmn<-now[[3]]
+    if(!mtch%in%rmn$A && !mtch%in%rmn$B){
+      if(nrow(pth)>maxlong){
+        maxlong<-nrow(pth)
+        maxstrong<-sum(pth$B)+sum(pth$A)
+        maxpth<-pth}else if(nrow(pth)==maxlong && sum(pth$A)+sum(pth$B)>maxstrong){
+          maxlong<-nrow(pth)
+          maxstrong<-sum(pth$B)+sum(pth$A)
+          maxpth<-pth}
+      next}
+    if(mtch %in% rmn$A){
+      for(i in which(rmn$A==mtch)){
+        nxtrmn<-rmn[-i,]
+        nxtpth<-rbind(pth,rmn[i,])
+        nxtmtch<-rmn$B[i]
+        q$push((list(nxtmtch,nxtpth,nxtrmn)),-sum(nxtpth$A)-sum(nxtpth$B))}}
+    ### no need to do this twice for x/x
+    if(mtch %in% rmn$B){
+      for(i in which(rmn$B==mtch)){
+        if(rmn$A[i]!=mtch){
+        nxtrmn<-rmn[-i,]
+        nxtpth<-rbind(pth,rmn[i,])
+        nxtmtch<-rmn$A[i]
+        q$push((list(nxtmtch,nxtpth,nxtrmn)),-sum(nxtpth$A)-sum(nxtpth$B))}}}}
+list(maxlong,maxstrong,maxpth)}
 ```
 
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+```{r}
+part2<-findlongchain(components)
+part2[[1]] #length
+part2[[2]] #strength
+part2[[3]] #path
 ```
 

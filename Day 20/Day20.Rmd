@@ -1,48 +1,202 @@
 ---
-title: "Day XX Notebook"
+title: "Day 20 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
 library(stringr)
 library(tidyverse)
 library(readr)
 library(collections)
+library(reshape2)
 options(scipen = 999)
 ```
 
+```{r,eval=FALSE}
+input<-read_lines("Day20Sample.txt")
+
+```
+
+Put the particles into a dataframe
+```{r,eval=FALSE}
+particleframe<-as.data.frame(matrix(nrow=0,ncol=10))
+for(i in 1:length(input)){
+  particle<-input[i]
+  particle<-str_remove_all(particle,"p=<|a=<|v=<|>,|>")
+  particle<-c(i-1,as.numeric(unlist(str_split(particle,",| "))))
+particleframe<-rbind(particleframe,particle)
+}
+colnames(particleframe)<-c("num","px","py","pz","vx","vy","vz","ax","ay","az")
+```
+
+## Part 1
+
+Over time, the one that stays the closest is among the ones that has the lowest acceleration,
+if more than one, then the one with the lowest velocity,
+if more than one, then the one with the lowest position
+
+```{r,eval=FALSE}
+### find the manhattan acceleration
+particleframe<-particleframe %>% rowwise %>%
+  ##find the manhattan accelerations
+  mutate(mana=abs(ax)+abs(ay)+abs(az))%>%
+  ##find starting manhattan manhattan velocity
+  mutate(manv=abs(vx)+abs(vy)+abs(vz))%>%
+  ##find starting manhattan distance
+  mutate(manp=abs(px)+abs(py)+abs(pz))
+```
+
+
+```{r,eval=FALSE}
+
+part1<-particleframe%>%rowwise%>%
+  filter(mana==min(particleframe$mana))
+part1<-part1%>%rowwise%>%
+  filter(manv==min(part1$manv))
+part1<-part1%>%rowwise%>%
+  filter(manp==min(part1$manp))
+part1<-part1$num[1]
+part1
+```
+## Part 2
+
+After spending a lot of time trying to find and calculate the collisions  AND GETTING WRONG ANSWERS, just step through.
+For time from 1-50 (the calculations say they end at 39, this is just to be certain), calculate position.  Remove any particles at the same position.
+
+```{r,eval=FALSE}
+killcolliders<-function(df){
+  dead<-list()
+  ## copy the ps and vs
+  df<-df %>% rowwise %>%mutate(base1=num+1)%>%
+    ## add working copies of position and velocity
+    mutate(curvx=vx,curvy=vy,curvz=vz,curpx=px,curpy=py,curpz=pz)
+  i<-1
+  while(i<50){
+  df<-df%>%rowwise%>%
+    ## update velocity
+    mutate(nxtvx=curvx+ax,nxtvy=curvy+ay,nxtvz=curvz+az)%>%
+    ## update position
+    mutate(nxtpx=nxtvx+curpx,nxtpy=nxtvy+curpy,nxtpz=nxtvz+curpz)%>%
+    ## create an easy-to-compare coordinate
+    mutate(cmpr=paste(nxtpx,nxtpy,nxtpz))
+  ## get a list of everything that appears more than once
+  collided<-df$cmpr[which(duplicated(df$cmpr))]
+  ## mark everything that has collided
+  df<-df%>%rowwise%>%
+    mutate(clsn=cmpr %in% collided)
+  ## dead is for seeing the collisions later on, if wanted
+  #dead<-append(dead,list(df%>%rowwise%>%filter(clsn==TRUE)))
+  ## filter out the things that haven't banged into anything
+  df<-df%>%rowwise%>%
+    filter(clsn==FALSE)%>%
+    ### update position, and velocity
+    mutate(curvx=nxtvx,curvy=nxtvy,curvz=nxtvz,curpx=nxtpx,curpy=nxtpy,curpz=nxtpz)
+  ## update the counter
+  i<-i+1}
+  df}
+```
+
+
+
+
+```{r,eval=FALSE}
+part2<-killcolliders(particleframe)
+part2<-nrow(part2)
+part2
+```
+
+---------
+Everything below here works, but takes actual hours.  HOURS. I still think this is the right way to do it (find the actual collisions), but HOURS.  (Also, it didn't work at first, which is why it was abandoned.)
+
+```{r,eval=FALSE}
+# collisiontime<-function(df){
+#   ## find t where the xs are equal
+#   ## because of the way this moves, the formula isn't technically
+#   ## a*t^2+v*t+p, it's (a/2)*t^2+(v+a/2)*t+p
+#   a<-(df$ax[1]/2)-(df$ax[2]/2)
+#   b<-(df$vx[1]+df$ax[1]/2)-(df$vx[2]+df$ax[2]/2)
+#   c<-df$px[1]-df$px[2]
+### if a=0, then use the formula for a line
+#   if(a==0){
+### if a & b=0, then these will never meet, return NA
+#     if(b==0){return(NA)}else{t<-(-c/b)}
+#   }else{
+### find the determinant - if less than 0, no intersection
+#     d<-b^2-(4*a*c)
+#     if(d<0){t<-return(NA)
+#     }else{
+### ts are the 0s
+#       t<-c(((-b-sqrt(d))/(2*a)),((-b+sqrt(d))/(2*a)))}}
+### filter if t<0 or t is not an integer
+#   t<-t[which(t>=0)]
+#   t<-t[which(t==round(t))]
+#   if(length(t)==0){return(NA)}
+### ensure that it intersects in the y & z coordinates as well
+#   t<-sapply(t,function(x){
+#     if(((df$ay[1]/2)*x^2+(df$ay[1]/2+df$vy[1])*x+df$py[1])==((df$ay[2]/2)*x^2+(df$ay[2]/2+df$vy[2])*x+df$py[2])){x<-x}else{return(NA)}
+#     if(((df$az[1]/2)*x^2+(df$az[1]/2+df$vz[1])*x+df$pz[1])==((df$az[2]/2)*x^2+(df$az[2]/2+df$vz[2])*x+df$pz[2])){x<-x}else{return(NA)}
+#     x})
+#   t<-t[which(!is.na(t))]
+#   if(length(t)==0){return(NA)}
+### return time t (or ts if multiple intersections)
+#   t}
+
+```
+
+
+```{r,eval=FALSE}
+# collisionframeagain<-as.data.frame(matrix(nrow=0,ncol=3))
+# for(i in 1:(nrow(particleframe)-1)){
+#   for(j in (i+1):nrow(particleframe)){
+### for each pair of particles, find out if they intersect or not
+#     x<-collisiontime(particleframe[c(i,j),])
+### create a data frame with their intersection time (if it exists) or NA (if not)
+#     for(k in 1:length(x)){
+#       collisionframeagain<-rbind(collisionframeagain,(c(i,j,x[k])))}}
+#   if(i%%100==0){cat(i,"\n")}}
+```
+
+
+
+
+```{r,eval=FALSE}
+#colnames(collisionframeagain)<-c("A","B","Collide")
+### pull the list of uncollided particles and count them.
+#answer<-length(unique(c(collisionframeagain$A,finalshot$B)))
+```
+
+```{r,eval=FALSE}
+### get just the collisions
+#justthecollisions<-collisionframeagain%>%rowwise%>%filter(!is.na(Collide))
+```
+
+
+```{r,eval=FALSE}
+#  remcol<-function(df){
+# ### get the list of particles that collided
+#  hitlist<-c()
+# ### if there are still particles that have a collision time
+#    while(any(!is.na(df$Collide))){
+# ###   get a sub df of all with the minimum collision time
+#      b<-df%>%rowwise%>%filter(Collide==min(df$Collide,na.rm=TRUE))
+# ### get a list of all particles that collided 
+#      c<-unique(c(b$A,b$B))
+# ### 
+# hitlist<-c(hitlist,c)
+# ### remove those particles from further consideration, repeat
+#      df<-df%>%rowwise%>%filter(!(A%in%c))%>%filter(!(B%in%c))}
+#    hitlist}
+```
+
+
+
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
-
+#hitparticles<-remcol(justthecollisions)
+### answer is the number of particles - the length of the particles that collided.
+#answer<-nrow(particleframe)-length(hitparticles)
+#answer
 ```
 
-```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
-
-```
-
-
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
-```
 

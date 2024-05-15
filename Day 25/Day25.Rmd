@@ -1,13 +1,9 @@
 ---
-title: "Day XX Notebook"
+title: "Day 25 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
 library(stringr)
@@ -17,32 +13,82 @@ library(collections)
 options(scipen = 999)
 ```
 
-```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+I'm not going to try to parse the input
 
-```
 
 ```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
-
+turing<-function(reps){
+  tape<-dict()
+  counter<-1
+  sta<-"A"
+  pos<-0
+  while(counter<=reps){
+    if(!tape$has(pos)){tape$set(pos,0)}
+    ### This is my input
+    switch(sta,
+           "A"={
+             if(tape$get(pos)==0){
+               tape$set(pos,1)
+               pos<-pos+1
+               sta<-"B"
+             }else{
+               tape$set(pos,0)
+               pos<-pos-1
+               sta<-"F"}},
+           "B"={
+             if(tape$get(pos)==0){
+               tape$set(pos,0)
+               pos<-pos+1
+               sta<-"C"
+             }else{
+               tape$set(pos,0)
+               pos<-pos+1
+               sta<-"D"}},
+           "C"={
+             if(tape$get(pos)==0){
+               tape$set(pos,1)
+               pos<-pos-1
+               sta<-"D"
+             }else{
+               tape$set(pos,1)
+               pos<-pos+1
+               sta<-"E"}},
+           "D"={
+             if(tape$get(pos)==0){
+               tape$set(pos,0)
+               pos<-pos-1
+               sta<-"E"
+             }else{
+               tape$set(pos,0)
+               pos<-pos-1
+               sta<-"D"}},
+           "E"={
+             if(tape$get(pos)==0){
+               tape$set(pos,0)
+               pos<-pos+1
+               sta<-"A"
+             }else{
+               tape$set(pos,1)
+               pos<-pos+1
+               sta<-"C"}},
+           "F"={
+             if(tape$get(pos)==0){
+               tape$set(pos,1)
+               pos<-pos-1
+               sta<-"A"
+             }else{
+               tape$set(pos,1)
+               pos<-pos+1
+               sta<-"A"}},
+           cat("State Problem\n"))
+    counter<-counter+1}
+  ### add all of the values
+checksum<-sum(unlist(tape$values()))
+checksum}
 ```
 
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+```{r}
+turing(12794428)
 ```
 

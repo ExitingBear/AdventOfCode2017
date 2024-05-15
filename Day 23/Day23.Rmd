@@ -1,48 +1,123 @@
 ---
-title: "Day XX Notebook"
+title: "Day 23 Notebook"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 library(knitr)
 library(dplyr)
 library(stringr)
 library(tidyverse)
 library(readr)
 library(collections)
+library(numbers)
 options(scipen = 999)
 ```
 
-```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+```{r,eval=FALSE}
+input<-read_lines("../../AoCData/AOC2017/Day23.txt")
 
 ```
 
-```{r}
-### Matrix
-diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
-for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
+## Part 1
+Copying/altering the Day 18 code, because I can:
+
+
+```{r,eval=FALSE}
+coproc<-function(instructions){
+  r<-dict()
+  i<-1
+  mulcount<-0
+  ### set registers
+  for(reg in 1:8){
+    r$set(letters[reg],0)}
+  while(i<=length(instructions)&&i>0){
+    inst<-as.list(unlist(str_split(instructions[i]," ")))
+    ### deal with registers here - set the second to 0, if it doesn't exist yet
+    if(inst[[2]] %in% letters && !r$has(inst[[2]])){r$set(inst[[2]],0)}
+    ### set the third
+    if(length(inst)==3){
+      ### if it exists,
+      if(inst[[3]]%in%letters){
+        if(r$has(inst[[3]])){inst[[3]]<-r$get(inst[[3]])
+        }else{
+          r$set(inst[[3]],0)
+          inst[[3]]<-0}}
+      inst[[3]]<-as.numeric(inst[[3]])}
+    switch(inst[[1]],
+           "set"={r$set(inst[[2]],inst[[3]])},
+           "sub"={r$set(inst[[2]],r$get(inst[[2]])-inst[[3]])},
+           "mul"={r$set(inst[[2]],r$get(inst[[2]])*inst[[3]])
+             mulcount<-mulcount+1},
+           "jnz"={
+             if(inst[[2]]%in%letters){inst[[2]]<-r$get(inst[[2]])}
+             inst[[2]]<-as.numeric(inst[[2]])
+             if(inst[[2]]!=0){i<-i+inst[[3]]
+             next}},
+           cat("****",inst," :something went wrong\n"))
+    i<-i+1}
+  mulcount}
+```
+
+```{r,eval=FALSE}
+part1<-coproc(input)
+part1
+```
+## Part 2
+Figure out what the code is doing and try it for a=1
+
+Translating (to see if that helps)
+```{r,eval=FALSE}
+b<-93             # set b 93
+c<-b              # set c b
+if(a!=0){
+  b <- b*100      # mul b 100
+  b <- b+100000   # sub b -100000
+  c <- b          # set c b
+  c <- b +17000}  # sub c -17000
+while(true){
+  f<-1            # set f 1
+  d<-2            # set d 2
+  while(d!=b){    
+    e<-2          # set e 2
+    while(e!=b){  
+      g<-d        # set g d
+      g<-g*e      # mul g e - which is basically d*e
+      g<-g-b      # sub g b - or b-d*e
+      if(g==0){   # jnz g 2 - or b=(d*e)
+        f<-0}     # set f 0
+      e<-e+1}     # sub e -1 - increment e until e= b
+    d<-d+1}       # sub d -1 - increment d until d=b
+  if(f==0){       # jnz f 2
+    h<-h+1}       # sub h -1
+  if(b==c){break} # jnz g 2
+  b<-b+17}        # sub b -17
+#########
+## or smaller
+
+b<-93
+c<-93
+if(a!=0){
+  b<-109300
+  c<-126300}
+while(true){
+  if(!isPrime(b)){h<-h+1}  ### there is a d/e combination where d*e=b
+  if(b==c){break}
+  b<-b+17}
+
 
 ```
 
+If I'm looking at this right,
+The top checks to see if a is 0, if so b goes from 93 to 93.  If not, b goes from 109300 to 126300
+the middle loops check to see if b is composite.  If it is, h<-h+1.  Then increase by b by 17.
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+Or even more straightforwardly:
+
+```{r,eval=FALSE}
+part2<-seq(from=109300,to=126300,by=17) ## list of all the numbers to be checked
+part2<-!isPrime(part2)  ## sets TRUE if composite, FALSE if prime
+part2<-sum(part2)   ## adds the composites.
+part2
 ```
 
